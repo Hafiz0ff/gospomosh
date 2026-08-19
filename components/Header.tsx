@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { APP_CONFIG } from "@/lib/config";
+import ThemeSelector from "@/components/ThemeSelector";
 import {
   Search, FileText, CheckSquare, Calculator, HelpCircle, Shield, UserCheck, Menu, X
 } from "lucide-react";
@@ -52,6 +53,7 @@ export default function Header() {
 
           {/* Desktop Right Actions */}
           <div className="hidden sm:flex items-center space-x-3">
+            <ThemeSelector />
             <Link
               href="/wizard/vid-na-zhitelstvo"
               className="bg-[#FF8C42] hover:bg-[#E66E26] text-white font-bold text-xs sm:text-sm px-4 sm:px-5 py-2.5 rounded-xl shadow-md shadow-[#FF8C42]/20 transition flex items-center space-x-2 active:scale-95"
@@ -70,6 +72,7 @@ export default function Header() {
 
           {/* Mobile Hamburger Button */}
           <div className="flex items-center space-x-2 lg:hidden">
+            <ThemeSelector />
             <Link
               href="/wizard/vid-na-zhitelstvo"
               className="bg-[#FF8C42] text-white font-bold text-xs px-3 py-2 rounded-xl transition flex items-center space-x-1"
