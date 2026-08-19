@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+:root {
+  --background: #FDF2F0;
+  --foreground: #08525a;
+}
+
+/* Touch targets and iOS smooth rendering */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  background-color: #FDF2F0;
+  color: #08525a;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* Ensure inputs do not auto-zoom on iOS (font-size minimum 16px on mobile focus) */
+@media (max-width: 640px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}
