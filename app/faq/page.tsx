@@ -3,12 +3,19 @@
 import React, { useState } from "react";
 import { MOCK_FAQ } from "@/lib/mockData";
 import { useLanguage } from "@/lib/languageContext";
-import { HelpCircle, Search, Sparkles, HeartHandshake, ShieldCheck } from "lucide-react";
+import { HelpCircle, Search, Sparkles, HeartHandshake, ShieldCheck, ChevronDown } from "lucide-react";
 
 export default function FAQPage() {
   const { language } = useLanguage();
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState<"all" | "migration" | "benefits">("all");
+  const [openIds, setOpenIds] = useState<string[]>([]);
+
+  const toggleAccordion = (id: string) => {
+    setOpenIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
 
   const getFaqQuestion = (id: string, originalQ: string) => {
     if (language === "tg") {
@@ -70,7 +77,7 @@ export default function FAQPage() {
         case "faq-7":
           return "ИНН аз ҷониби мақомоти андоз (ФНС) дар асоси аризаи шаҳрванди хориҷӣ дар давоми 1–3 рӯз бо доштани қайди муҳоҷиратӣ ва тарҷумаи нотариалии шиноснома дода мешавад. СНИЛС дар Фонди иҷтимоии Русия (СФР) ё аз ҷониби корфармо ҳангоми ба кори расмӣ даромадан тартиб дода мешавад.";
         case "faq-8":
-          return "Шахсони зерин ҳуқуқи гирифтани шаҳрвандӣ бо тартиби имтиёзнокро доранд: шахсоне, ки бо шаҳрванди РФ ақди никоҳ дошта, фарзанди муштарак доранд; шахсоне, ки падару модар ё фарзандони болиғи шаҳрванди РФ доранд; хатмкунандагони донишгоҳҳои аккредитатсияшудаи Русия бо дипломи аъло; иштирокчиёни Барномаи давлатии кӯчонидани ҳамватанон.";
+          return "Шахсоне зерин ҳуқуқи гирифтани шаҳрвандӣ бо тартиби имтиёзнокро доранд: шахсоне, ки бо шаҳрванди РФ ақди никоҳ дошта, фарзанди муштарак доранд; шахсоне, ки падару модар ё фарзандони болиғи шаҳрванди РФ доранд; хатмкунандагони донишгоҳҳои аккредитатсияшудаи Русия бо дипломи аъло; иштирокчиёни Барномаи давлатии кӯчонидани ҳамватанон.";
 
         // Пособия и социальные выплаты
         case "faq-9":
@@ -116,8 +123,8 @@ export default function FAQPage() {
         </h1>
         <p className="text-gray-500 text-xs sm:text-sm">
           {language === "tg"
-            ? "Ҷавобҳои мутахассисон ба саволҳои асосӣ оид ба муҳоҷират, кӯмакпулиҳо, сармояи модарӣ, ВНЖ, РВП ва андозҳо дар соли 2026"
-            : "Ответы юристов на ключевые вопросы по миграционному учету, пособиям, маткапиталу, ВНЖ, РВП и налогам в 2026 году"}
+            ? "Барои хондани ҷавоб ба саволи лозима клик намоед"
+            : "Нажмите на интересующий вопрос, чтобы развернуть подробный ответ"}
         </p>
       </div>
 
@@ -167,39 +174,61 @@ export default function FAQPage() {
         />
       </div>
 
-      {/* FAQ Items List */}
-      <div className="space-y-4">
+      {/* Accordion List */}
+      <div className="space-y-3">
         {filteredFaq.map((faq) => {
           const isBenefit = isBenefitFaq(faq.id);
+          const isOpen = openIds.includes(faq.id);
+
           return (
             <div
               key={faq.id}
-              className="bg-white p-6 sm:p-7 rounded-3xl border border-[#0E7C86]/10 shadow-sm space-y-3 hover:border-[#2AA9A9]/40 transition"
+              className={`bg-white rounded-2xl sm:rounded-3xl border transition-all duration-200 shadow-sm overflow-hidden ${
+                isOpen ? "border-[#0E7C86]/40 shadow-md ring-1 ring-[#0E7C86]/10" : "border-[#0E7C86]/10 hover:border-[#2AA9A9]/40"
+              }`}
             >
-              <div className="flex items-start space-x-3.5">
-                <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5 shadow-sm ${
-                  isBenefit ? "bg-amber-50 text-[#FF8C42]" : "bg-[#FDF2F0] text-[#0E7C86]"
-                }`}>
-                  {isBenefit ? <HeartHandshake className="w-5 h-5" /> : <HelpCircle className="w-5 h-5" />}
-                </div>
-                <div className="space-y-2 flex-1">
-                  <div className="flex justify-between items-center">
-                    <span className={`text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full ${
+              {/* Question Header (Clickable) */}
+              <button
+                onClick={() => toggleAccordion(faq.id)}
+                className="w-full text-left p-5 sm:p-6 flex items-start justify-between gap-4 transition group"
+                aria-expanded={isOpen}
+              >
+                <div className="flex items-start space-x-3.5">
+                  <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5 shadow-sm transition ${
+                    isBenefit
+                      ? "bg-amber-50 text-[#FF8C42] group-hover:bg-[#FF8C42] group-hover:text-white"
+                      : "bg-[#FDF2F0] text-[#0E7C86] group-hover:bg-[#0E7C86] group-hover:text-white"
+                  }`}>
+                    {isBenefit ? <HeartHandshake className="w-4 h-4 sm:w-5 sm:h-5" /> : <HelpCircle className="w-4 h-4 sm:w-5 sm:h-5" />}
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full inline-block ${
                       isBenefit ? "bg-amber-100 text-amber-900" : "bg-[#FDF2F0] text-[#0E7C86]"
                     }`}>
                       {isBenefit
                         ? (language === "tg" ? "Кӯмакпулӣ ва пардохтҳо" : "Пособия и выплаты")
                         : (language === "tg" ? "Муҳоҷират ва ҳуҷҷатҳо" : "Миграция и документы")}
                     </span>
+                    <h3 className="font-extrabold text-sm sm:text-base text-[#08525a] group-hover:text-[#FF8C42] transition leading-snug">
+                      {getFaqQuestion(faq.id, faq.question)}
+                    </h3>
                   </div>
-                  <h3 className="font-extrabold text-base sm:text-lg text-[#08525a] leading-snug">
-                    {getFaqQuestion(faq.id, faq.question)}
-                  </h3>
-                  <p className="text-xs sm:text-sm text-[#08525a]/80 leading-relaxed font-medium">
-                    {getFaqAnswer(faq.id, faq.answer)}
-                  </p>
                 </div>
-              </div>
+
+                <div className={`p-2 rounded-xl bg-[#FDF2F0] text-[#0E7C86] transition-transform duration-200 flex-shrink-0 ${
+                  isOpen ? "rotate-180 bg-[#0E7C86] text-white" : ""
+                }`}>
+                  <ChevronDown className="w-4 h-4" />
+                </div>
+              </button>
+
+              {/* Collapsible Answer */}
+              {isOpen && (
+                <div className="px-5 sm:px-6 pb-6 pt-2 text-xs sm:text-sm text-[#08525a]/85 leading-relaxed font-medium border-t border-[#0E7C86]/5 bg-[#FDF2F0]/20 animate-in fade-in duration-200">
+                  <p>{getFaqAnswer(faq.id, faq.answer)}</p>
+                </div>
+              )}
             </div>
           );
         })}
