@@ -8,10 +8,12 @@ export default function LanguageSelector() {
   const { language, setLanguage } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
 
-  const languages: { code: Language; label: string; flag: string }[] = [
-    { code: "ru", label: "Русский", flag: "🇷🇺" },
-    { code: "tg", label: "Тоҷикӣ", flag: "🇹🇯" }
+  const languages: { code: Language; label: string; flag: string; badge: string }[] = [
+    { code: "ru", label: "Русский", flag: "🇷🇺", badge: "RU" },
+    { code: "tg", label: "Тоҷикӣ", flag: "🇹🇯", badge: "TJ" }
   ];
+
+  const currentBadge = language === "ru" ? "RU" : "TJ";
 
   return (
     <div className="relative">
@@ -21,7 +23,7 @@ export default function LanguageSelector() {
         title="Интихоби забон / Выбор языка"
       >
         <Globe className="w-4 h-4 text-[#0E7C86]" />
-        <span>{language === "ru" ? "RU" : "TG"}</span>
+        <span className="font-extrabold">{currentBadge}</span>
       </button>
 
       {isOpen && (
