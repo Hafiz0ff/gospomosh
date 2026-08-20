@@ -7,6 +7,9 @@ import { COUNTRIES, validateINN, validateSNILS, validatePhone, validateEmail } f
 import { FullClientQuestionnaire, Child, ClientDocument } from "@/lib/types";
 import { saveQuestionnaire, getClientQuestionnaire } from "@/lib/dataService";
 import { submitQuestionnaireAction } from "@/app/actions/submitQuestionnaire";
+import { useLanguage } from "@/lib/languageContext";
+import { QUESTIONNAIRE_TRANSLATIONS } from "@/lib/questionnaireTranslations";
+import { AlertCircle } from "lucide-react";
 import {
   ArrowLeft, ChevronRight, CheckCircle2, ShieldAlert, User, Globe, FileText,
   CreditCard, PhoneCall, MapPin, Heart, Users, Baby, FolderPlus, Download, CheckSquare
@@ -14,6 +17,8 @@ import {
 
 export default function ClientQuestionnairePage() {
   const router = useRouter();
+  const { language } = useLanguage();
+  const tq = QUESTIONNAIRE_TRANSLATIONS[language];
   const [step, setStep] = useState(1);
   const [clientQuestionnaireId, setClientQuestionnaireId] = useState<string>("");
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
@@ -204,7 +209,7 @@ export default function ClientQuestionnairePage() {
       <div className="flex items-center justify-between border-b border-[#0E7C86]/10 pb-4 print:hidden">
         <Link href="/" className="text-[#0E7C86] hover:underline text-sm font-bold flex items-center space-x-1.5">
           <ArrowLeft className="w-4 h-4" />
-          <span>На главную</span>
+          <span>{tq.toMain}</span>
         </Link>
         <div className="flex items-center space-x-3">
           {saveMessage && <span className="text-xs font-bold text-[#FF8C42]">{saveMessage}</span>}
@@ -212,16 +217,24 @@ export default function ClientQuestionnairePage() {
             onClick={handleSaveDraft}
             className="text-xs font-bold px-3 py-1.5 bg-[#FFD9A0]/50 hover:bg-[#FFD9A0] text-[#08525a] rounded-xl transition"
           >
-            Сохранить и продолжить позже
+            {tq.saveAndContinue}
           </button>
         </div>
+      </div>
+
+            {/* DOCUMENT ACCURACY DISCLAIMER */}
+      <div className="bg-[#FFD9A0]/25 border border-[#FF8C42]/30 rounded-2xl p-3.5 sm:p-4 text-xs text-[#08525a] flex items-start space-x-2.5 shadow-sm">
+        <AlertCircle className="w-4 h-4 text-[#FF8C42] flex-shrink-0 mt-0.5" />
+        <p className="leading-relaxed font-semibold">
+          {tq.docDisclaimer}
+        </p>
       </div>
 
       {/* STEPPER PROGESS */}
       <div className="bg-white rounded-3xl border border-[#0E7C86]/10 p-6 sm:p-8 shadow-sm space-y-6 print:hidden">
         <div className="flex justify-between items-center text-xs font-bold text-[#08525a]">
-          <span>Шаг {step} из 12</span>
-          <span>{progressPercent}% пройдено</span>
+          <span>{tq.stepOf(step, 12)}</span>
+          <span>{tq.passedPercent(progressPercent)}</span>
         </div>
         <div className="w-full bg-[#FDF2F0] h-3 rounded-full overflow-hidden">
           <div
@@ -968,7 +981,7 @@ export default function ClientQuestionnairePage() {
             disabled={step === 1}
             className="text-xs font-bold text-gray-400 hover:text-gray-600 disabled:opacity-30"
           >
-            Назад
+            {tq.back}
           </button>
 
           {step < 12 && (
@@ -977,7 +990,7 @@ export default function ClientQuestionnairePage() {
               onClick={handleNext}
               className="bg-[#0E7C86] hover:bg-[#08525a] text-white font-bold text-xs px-6 py-3 rounded-xl transition flex items-center space-x-1.5 shadow-sm"
             >
-              <span>Продолжить</span>
+              <span>{tq.next}</span>
               <ChevronRight className="w-4 h-4" />
             </button>
           )}
