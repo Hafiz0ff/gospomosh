@@ -152,7 +152,7 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     footerRights: "Все права защищены."
   },
   tg: {
-    appName: "ДастЁрииДавлатӣ",
+    appName: "ГосПомощь",
     catalog: "Феҳристи хизматрасониҳо",
     clientQuestionnaire: "Саволномаи мизоҷ",
     checkDocs: "Санҷиши ҳуҷҷатҳо",
@@ -176,7 +176,7 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     allCategories: "Ҳамаи бахшҳо",
     popularTitle: "Хизматрасониҳои маъмул",
     popularSubtitle: "Муроҷиатҳои бештари мизоҷон",
-    whyChooseTitle: "Чаро мизоҷон «ДастЁрииДавлатӣ»-ро интихоб мекунанд?",
+    whyChooseTitle: "Чаро мизоҷон «ГосПомощь»-ро интихоб мекунанд?",
     whyChooseSubtitle: "Мо низоми мураккаби ҳуҷҷатгузориро ба як раванди фаҳмо ва рақамии хизматрасонӣ табдил медиҳем.",
     benefit1Title: "Бе хатогӣ",
     benefit1Desc: "Система хатари рад шудани ҳуҷҷатҳоро аз сабаби нопуррагӣ бартараф месозад.",
