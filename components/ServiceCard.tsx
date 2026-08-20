@@ -44,28 +44,68 @@ export function getServiceIcon(slug: string, categorySlug?: string) {
 export default function ServiceCard({ service }: ServiceCardProps) {
   const { t, language } = useLanguage();
 
+  // Full Bilingual Service Names
   const getServiceName = (s: Service) => {
     if (language === "tg") {
       if (s.slug === "vid-na-zhitelstvo") return "Иҷозати зист (ВНЖ)";
+      if (s.slug === "zamena-pasporta" || s.slug === "zamena-pasporta-rf") return "Ивази шиносномаи РФ (20/45 солагӣ, гумшуда)";
+      if (s.slug === "zagranpasport") return "Шиносномаи хориҷӣ (5 ва 10 сола)";
       if (s.slug === "rvp") return "Иҷозати истиқомати муваққатӣ (РВП)";
+      if (s.slug === "migratsionny-uchet") return "Бақайдгирии муҳоҷиратӣ (Регистрация)";
+      if (s.slug === "inn" || s.slug === "inn-fl") return "Гирифтани ИНН барои шаҳрванд";
       if (s.slug === "grazhdanstvo-rf") return "Шаҳрвандии Федератсияи Русия";
       if (s.slug === "patent") return "Патент барои кор дар РФ";
-      if (s.slug === "inn-fl") return "Гирифтани ИНН барои шаҳрванд";
       if (s.slug === "snils") return "Бақайдгирии СНИЛС";
-      if (s.slug === "zamena-pasporta-rf") return "Ивази шиносномаи шаҳрванди РФ";
-      if (s.slug === "zagranpasport") return "Шиносномаи хориҷӣ (5 ва 10 сола)";
+      if (s.slug === "auto-registration") return "Бақайдгирии мошин дар БДА (ГИБДД)";
     }
     return s.name;
   };
 
-  const getCategoryName = (catName?: string) => {
+  // Full Bilingual Short Descriptions
+  const getServiceDesc = (s: Service) => {
+    if (language === "tg") {
+      if (s.slug === "vid-na-zhitelstvo") return "Ҳамроҳии пурра барои гирифтани мақоми ВНЖ дар Федератсияи Русия";
+      if (s.slug === "zamena-pasporta" || s.slug === "zamena-pasporta-rf") return "Омодасозии зуди ариза ва ҳуҷҷатҳо барои ивази шиносномаи шаҳрванди РФ";
+      if (s.slug === "zagranpasport") return "Шиносномаи хориҷии биометрӣ бо чипи электронӣ";
+      if (s.slug === "rvp") return "Ба расмият даровардани РВП аз рӯи квота ё асосҳои имтиёзнок";
+      if (s.slug === "migratsionny-uchet") return "Бақайдгирии қонунии муҳоҷиратӣ дар ҷои истиқомат";
+      if (s.slug === "inn" || s.slug === "inn-fl") return "Ба ҳисоб гирифтан дар мақомоти андоз ва гирифтани шаҳодатномаи ИНН";
+      if (s.slug === "auto-registration") return "Ба ҳисоб гузоштани нақлиёт ва гирифтани рақамҳои давлатӣ";
+    }
+    return s.short_description || s.description;
+  };
+
+  const getProcessingTime = (timeStr?: string | null) => {
+    if (!timeStr) return language === "tg" ? "1 рӯз" : "1 день";
+    if (language === "tg") {
+      return timeStr
+        .replace(/От 4 месяцев/gi, "Аз 4 моҳ")
+        .replace(/От 1 до 5 дней/gi, "Аз 1 то 5 рӯз")
+        .replace(/От 1 месяца/gi, "Аз 1 моҳ")
+        .replace(/От 2 до 4 месяцев/gi, "Аз 2 то 4 моҳ")
+        .replace(/1 рабочий день/gi, "1 рӯзи корӣ")
+        .replace(/1-3 дня/gi, "1–3 рӯз")
+        .replace(/1 день/gi, "1 рӯз")
+        .replace(/дней/gi, "рӯз")
+        .replace(/дня/gi, "рӯз")
+        .replace(/день/gi, "рӯз")
+        .replace(/месяцев/gi, "моҳ")
+        .replace(/месяца/gi, "моҳ")
+        .replace(/месяц/gi, "моҳ");
+    }
+    return timeStr;
+  };
+
+  const getCategoryBadge = (catName?: string) => {
     if (language === "tg" && catName) {
       if (catName.includes("Миграцион")) return "Муҳоҷират";
       if (catName.includes("Паспорт")) return "Шиноснома";
-      if (catName.includes("Налог")) return "Андоз";
-      if (catName.includes("Авто")) return "Авто";
+      if (catName.includes("Загран")) return "Шиносномаи хориҷӣ";
+      if (catName.includes("Налог")) return "Андозҳо";
+      if (catName.includes("Авто")) return "Автомобил";
+      return "Хизматрасонӣ";
     }
-    return catName || "Хизматрасонӣ";
+    return catName || "Услуга";
   };
 
   return (
@@ -77,7 +117,7 @@ export default function ServiceCard({ service }: ServiceCardProps) {
               {getServiceIcon(service.slug, service.category?.slug)}
             </div>
             <span className="inline-block px-3 py-1 bg-[#2AA9A9]/15 text-[#08525a] text-xs font-bold rounded-full">
-              {getCategoryName(service.category?.name)}
+              {getCategoryBadge(service.category?.name)}
             </span>
           </div>
           <span className="text-xs font-semibold text-[#0E7C86] flex items-center space-x-1">
@@ -91,7 +131,7 @@ export default function ServiceCard({ service }: ServiceCardProps) {
         </h3>
 
         <p className="text-[#08525a]/75 text-sm mb-6 line-clamp-2 leading-relaxed font-normal">
-          {service.short_description || service.description}
+          {getServiceDesc(service)}
         </p>
       </div>
 
@@ -112,7 +152,7 @@ export default function ServiceCard({ service }: ServiceCardProps) {
               <span>{t.processingTimeLabel}</span>
             </div>
             <div className="font-bold text-[#08525a]">
-              {service.processing_time || "1 рӯз"}
+              {getProcessingTime(service.processing_time)}
             </div>
           </div>
         </div>
