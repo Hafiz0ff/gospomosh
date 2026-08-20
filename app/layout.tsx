@@ -3,6 +3,7 @@ import React from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { ThemeProvider } from "@/lib/themeContext";
+import { LanguageProvider } from "@/lib/languageContext";
 import { APP_CONFIG } from "@/lib/config";
 import type { Viewport } from "next";
 
@@ -26,15 +27,17 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <body className="antialiased min-h-screen flex flex-col justify-between overflow-x-hidden">
-        <ThemeProvider>
-          <div>
-            <Header />
-            <main className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
-              {children}
-            </main>
-          </div>
-          <Footer />
-        </ThemeProvider>
+        <LanguageProvider>
+          <ThemeProvider>
+            <div>
+              <Header />
+              <main className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
+                {children}
+              </main>
+            </div>
+            <Footer />
+          </ThemeProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

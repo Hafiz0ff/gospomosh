@@ -2,9 +2,11 @@
 
 import React, { useState } from "react";
 import { MOCK_SERVICES } from "@/lib/mockData";
-import { Calculator, Check, ArrowRight, ShieldCheck } from "lucide-react";
+import { useLanguage } from "@/lib/languageContext";
+import { Calculator, Check, ArrowRight } from "lucide-react";
 
 export default function CalculatorPage() {
+  const { t, language } = useLanguage();
   const [selectedServiceId, setSelectedServiceId] = useState(MOCK_SERVICES[0].id);
   const [ageGroup, setAgeGroup] = useState<"child" | "teen" | "adult">("adult");
   const [urgency, setUrgency] = useState<"standard" | "urgent">("standard");
@@ -24,14 +26,29 @@ export default function CalculatorPage() {
 
   const grandTotal = govFee + baseServicePrice + addonsTotal;
 
+  // Bilingual services naming
+  const getServiceName = (s: typeof service) => {
+    if (language === "tg") {
+      if (s.slug === "vid-na-zhitelstvo") return "Иҷозати зист (ВНЖ)";
+      if (s.slug === "rvp") return "Иҷозати истиқомати муваққатӣ (РВП)";
+      if (s.slug === "grazhdanstvo-rf") return "Шаҳрвандии Федератсияи Русия";
+      if (s.slug === "patent") return "Патент барои кор дар РФ";
+      if (s.slug === "inn-fl") return "Гирифтани ИНН барои шаҳрванд";
+      if (s.slug === "snils") return "Бақайдгирии СНИЛС";
+      if (s.slug === "zamena-pasporta-rf") return "Ивази шиносномаи шаҳрванди РФ";
+      if (s.slug === "zagranpasport") return "Шиносномаи хориҷӣ (5 ва 10 сола)";
+    }
+    return s.name;
+  };
+
   return (
     <div className="max-w-4xl mx-auto py-6 space-y-8 text-[#08525a]">
       <div>
-        <h1 className="text-3xl font-extrabold tracking-tight mb-2">
-          Калькулятор стоимости и пошлин
+        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight mb-2">
+          {t.calcTitle}
         </h1>
         <p className="text-xs sm:text-sm text-gray-500">
-          Рассчитайте точный размер государственной пошлины и юридического сопровождения
+          {t.calcSubtitle}
         </p>
       </div>
 
@@ -40,7 +57,7 @@ export default function CalculatorPage() {
         <div className="lg:col-span-2 bg-white rounded-3xl border border-black/10 p-6 sm:p-8 shadow-sm space-y-6">
           <div className="space-y-2">
             <label className="block text-xs font-bold uppercase tracking-wider text-gray-600">
-              Государственная услуга
+              {t.calcServiceLabel}
             </label>
             <select
               value={selectedServiceId}
@@ -49,7 +66,7 @@ export default function CalculatorPage() {
             >
               {MOCK_SERVICES.map((s) => (
                 <option key={s.id} value={s.id}>
-                  {s.name}
+                  {getServiceName(s)}
                 </option>
               ))}
             </select>
@@ -57,13 +74,13 @@ export default function CalculatorPage() {
 
           <div className="space-y-2">
             <label className="block text-xs font-bold uppercase tracking-wider text-gray-600">
-              Возраст заявителя
+              {t.calcAgeLabel}
             </label>
             <div className="grid grid-cols-3 gap-3">
               {[
-                { id: "child", label: "До 14 лет" },
-                { id: "teen", label: "14–18 лет" },
-                { id: "adult", label: "От 18 лет" }
+                { id: "child", label: t.calcAgeChild },
+                { id: "teen", label: t.calcAgeTeen },
+                { id: "adult", label: t.calcAgeAdult }
               ].map((item) => (
                 <button
                   key={item.id}
@@ -82,12 +99,12 @@ export default function CalculatorPage() {
 
           <div className="space-y-2">
             <label className="block text-xs font-bold uppercase tracking-wider text-gray-600">
-              Срочность подготовки
+              {t.calcUrgencyLabel}
             </label>
             <div className="grid grid-cols-2 gap-3">
               {[
-                { id: "standard", label: "Стандартная" },
-                { id: "urgent", label: "Срочная (+50%)" }
+                { id: "standard", label: t.calcUrgencyStandard },
+                { id: "urgent", label: t.calcUrgencyUrgent }
               ].map((item) => (
                 <button
                   key={item.id}
@@ -106,12 +123,12 @@ export default function CalculatorPage() {
 
           <div className="space-y-3 pt-2">
             <label className="block text-xs font-bold uppercase tracking-wider text-gray-600">
-              Дополнительные опции
+              {t.calcAddonsLabel}
             </label>
             {[
-              { id: "fill_app", label: "Заполнение заявления по регламенту", price: 1500 },
-              { id: "check_docs", label: "Юридическая проверка документов", price: 1000 },
-              { id: "escort", label: "Личное сопровождение юриста в МФЦ/МВД", price: 5000 }
+              { id: "fill_app", label: t.addonFillApp, price: 1500 },
+              { id: "check_docs", label: t.addonCheckDocs, price: 1000 },
+              { id: "escort", label: t.addonEscort, price: 5000 }
             ].map((addon) => {
               const checked = addons.includes(addon.id);
               return (
@@ -140,27 +157,27 @@ export default function CalculatorPage() {
           <div className="space-y-6">
             <div className="flex items-center space-x-2 border-b border-white/10 pb-4">
               <Calculator className="w-5 h-5 text-[#2AA9A9]" />
-              <h2 className="font-bold text-lg">Расчёт стоимости</h2>
+              <h2 className="font-bold text-lg">{t.calcSummaryTitle}</h2>
             </div>
 
             <div className="space-y-4 text-sm">
               <div className="flex justify-between items-center text-gray-200">
-                <span>Госпошлина:</span>
+                <span>{t.calcGovFee}</span>
                 <span className="font-bold text-white">{govFee.toLocaleString()} ₽</span>
               </div>
               <div className="flex justify-between items-center text-gray-200">
-                <span>Сопровождение:</span>
+                <span>{t.calcServicePrice}</span>
                 <span className="font-bold text-white">{baseServicePrice.toLocaleString()} ₽</span>
               </div>
               <div className="flex justify-between items-center text-gray-200">
-                <span>Доп. услуги:</span>
+                <span>{t.calcAddonsPrice}</span>
                 <span className="font-bold text-white">{addonsTotal.toLocaleString()} ₽</span>
               </div>
             </div>
 
             <div className="pt-6 border-t border-white/10 space-y-1">
               <span className="text-xs text-[#FFD9A0] block uppercase font-bold tracking-wider">
-                Итого к оплате
+                {t.calcTotal}
               </span>
               <div className="text-3xl font-black text-[#FF8C42]">
                 {grandTotal.toLocaleString()} ₽
@@ -169,10 +186,10 @@ export default function CalculatorPage() {
           </div>
 
           <button
-            onClick={() => alert("Заявка сформирована! Менеджер свяжется с вами для уточнения деталей.")}
+            onClick={() => alert(language === "tg" ? "Дархости шумо қабул шуд! Мутахассиси мо ба зудӣ бо шумо тамос мегирад." : "Заявка сформирована! Менеджер свяжется с вами для уточнения деталей.")}
             className="w-full bg-[#FF8C42] hover:bg-[#E66E26] text-white font-bold py-4 rounded-2xl shadow-lg transition text-sm flex items-center justify-center space-x-2"
           >
-            <span>Оформить услугу</span>
+            <span>{t.calcSubmitBtn}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>

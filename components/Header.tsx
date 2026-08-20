@@ -2,14 +2,16 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { APP_CONFIG } from "@/lib/config";
 import ThemeSelector from "@/components/ThemeSelector";
+import LanguageSelector from "@/components/LanguageSelector";
+import { useLanguage } from "@/lib/languageContext";
 import {
   Search, FileText, CheckSquare, Calculator, HelpCircle, Shield, UserCheck, Menu, X
 } from "lucide-react";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const { t } = useLanguage();
 
   return (
     <header className="bg-white/95 backdrop-blur-md border-b border-[#0E7C86]/10 sticky top-0 z-50 shadow-sm">
@@ -22,7 +24,7 @@ export default function Header() {
                 ГП
               </div>
               <span className="font-extrabold text-lg sm:text-xl text-[#08525a] tracking-tight">
-                {APP_CONFIG.name}
+                {t.appName}
               </span>
             </Link>
           </div>
@@ -31,53 +33,55 @@ export default function Header() {
           <nav className="hidden lg:flex items-center space-x-6 text-sm font-semibold text-[#08525a]/80">
             <Link href="/services" className="hover:text-[#0E7C86] transition flex items-center space-x-1.5">
               <FileText className="w-4 h-4 text-[#2AA9A9]" />
-              <span>Каталог услуг</span>
+              <span>{t.catalog}</span>
             </Link>
             <Link href="/client/questionnaire" className="hover:text-[#0E7C86] transition flex items-center space-x-1.5 text-[#0E7C86] font-bold">
               <UserCheck className="w-4 h-4 text-[#FF8C42]" />
-              <span>Анкета клиента</span>
+              <span>{t.clientQuestionnaire}</span>
             </Link>
             <Link href="/documents" className="hover:text-[#0E7C86] transition flex items-center space-x-1.5">
               <CheckSquare className="w-4 h-4 text-[#2AA9A9]" />
-              <span>Проверка документов</span>
+              <span>{t.checkDocs}</span>
             </Link>
             <Link href="/calculator" className="hover:text-[#0E7C86] transition flex items-center space-x-1.5">
               <Calculator className="w-4 h-4 text-[#2AA9A9]" />
-              <span>Калькулятор</span>
+              <span>{t.calculator}</span>
             </Link>
             <Link href="/faq" className="hover:text-[#0E7C86] transition flex items-center space-x-1.5">
               <HelpCircle className="w-4 h-4 text-[#2AA9A9]" />
-              <span>FAQ</span>
+              <span>{t.faq}</span>
             </Link>
           </nav>
 
           {/* Desktop Right Actions */}
           <div className="hidden sm:flex items-center space-x-3">
+            <LanguageSelector />
             <ThemeSelector />
             <Link
               href="/wizard/vid-na-zhitelstvo"
               className="bg-[#FF8C42] hover:bg-[#E66E26] text-white font-bold text-xs sm:text-sm px-4 sm:px-5 py-2.5 rounded-xl shadow-md shadow-[#FF8C42]/20 transition flex items-center space-x-2 active:scale-95"
             >
               <Search className="w-4 h-4" />
-              <span>Подобрать услугу</span>
+              <span>{t.pickService}</span>
             </Link>
             <Link
               href="/admin"
               className="text-[#0E7C86]/50 hover:text-[#0E7C86] p-2 rounded-lg transition"
-              title="Панель администратора"
+              title={t.adminPanel}
             >
               <Shield className="w-5 h-5" />
             </Link>
           </div>
 
-          {/* Mobile Hamburger Button */}
+          {/* Mobile Actions */}
           <div className="flex items-center space-x-2 lg:hidden">
+            <LanguageSelector />
             <ThemeSelector />
             <Link
               href="/wizard/vid-na-zhitelstvo"
               className="bg-[#FF8C42] text-white font-bold text-xs px-3 py-2 rounded-xl transition flex items-center space-x-1"
             >
-              <span>Подобрать</span>
+              <span>{t.pickBtn}</span>
             </Link>
             <button
               onClick={() => setIsOpen(!isOpen)}
@@ -100,7 +104,7 @@ export default function Header() {
               className="p-3 rounded-xl hover:bg-[#FDF2F0] flex items-center space-x-3 transition"
             >
               <FileText className="w-5 h-5 text-[#2AA9A9]" />
-              <span>Каталог услуг</span>
+              <span>{t.catalog}</span>
             </Link>
             <Link
               href="/client/questionnaire"
@@ -108,7 +112,7 @@ export default function Header() {
               className="p-3 rounded-xl bg-[#FDF2F0] text-[#0E7C86] font-bold flex items-center space-x-3 transition"
             >
               <UserCheck className="w-5 h-5 text-[#FF8C42]" />
-              <span>Единая анкета клиента</span>
+              <span>{t.clientQuestionnaire}</span>
             </Link>
             <Link
               href="/documents"
@@ -116,7 +120,7 @@ export default function Header() {
               className="p-3 rounded-xl hover:bg-[#FDF2F0] flex items-center space-x-3 transition"
             >
               <CheckSquare className="w-5 h-5 text-[#2AA9A9]" />
-              <span>Проверка документов</span>
+              <span>{t.checkDocs}</span>
             </Link>
             <Link
               href="/calculator"
@@ -124,7 +128,7 @@ export default function Header() {
               className="p-3 rounded-xl hover:bg-[#FDF2F0] flex items-center space-x-3 transition"
             >
               <Calculator className="w-5 h-5 text-[#2AA9A9]" />
-              <span>Калькулятор пошлин</span>
+              <span>{t.calculator}</span>
             </Link>
             <Link
               href="/faq"
@@ -132,7 +136,7 @@ export default function Header() {
               className="p-3 rounded-xl hover:bg-[#FDF2F0] flex items-center space-x-3 transition"
             >
               <HelpCircle className="w-5 h-5 text-[#2AA9A9]" />
-              <span>Частые вопросы (FAQ)</span>
+              <span>{t.faq}</span>
             </Link>
             <Link
               href="/admin"
@@ -140,7 +144,7 @@ export default function Header() {
               className="p-3 rounded-xl border border-[#0E7C86]/20 text-[#08525a] font-bold flex items-center space-x-3 transition"
             >
               <Shield className="w-5 h-5 text-[#0E7C86]" />
-              <span>Кабинет администратора</span>
+              <span>{t.adminPanel}</span>
             </Link>
           </nav>
         </div>
