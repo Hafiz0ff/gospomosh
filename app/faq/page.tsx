@@ -3,15 +3,17 @@
 import React, { useState } from "react";
 import { MOCK_FAQ } from "@/lib/mockData";
 import { useLanguage } from "@/lib/languageContext";
-import { HelpCircle, Search, Sparkles } from "lucide-react";
+import { HelpCircle, Search, Sparkles, HeartHandshake, ShieldCheck } from "lucide-react";
 
 export default function FAQPage() {
   const { language } = useLanguage();
   const [search, setSearch] = useState("");
+  const [activeFilter, setActiveFilter] = useState<"all" | "migration" | "benefits">("all");
 
   const getFaqQuestion = (id: string, originalQ: string) => {
     if (language === "tg") {
       switch (id) {
+        // Миграция и паспорта
         case "faq-1":
           return "Иҷозати зист (ВНЖ) дар Русия чанд муддат эътибор дорад?";
         case "faq-2":
@@ -28,6 +30,20 @@ export default function FAQPage() {
           return "Шаҳрванди хориҷӣ чӣ гуна метавонад дар РФ ИНН ва СНИЛС гирад?";
         case "faq-8":
           return "Кӣ метавонад бо тартиби имтиёзнок барои гирифтани шаҳрвандии РФ муроҷиат намояд?";
+
+        // Пособия и социальные выплаты
+        case "faq-9":
+          return "Кӣ ҳуқуқи гирифтани Кӯмакпулии ягона (Единое пособие)-ро барои кӯдакони то 17-сола ва занони ҳомиладор дорад?";
+        case "faq-10":
+          return "Оё шаҳрвандони хориҷии дорои ВНЖ метавонанд дар РФ кӯмакпулӣ ва пардохтҳои кӯдакона гиранд?";
+        case "faq-11":
+          return "Сармояи модарӣ (Материнский капитал) ба кӣ дода мешавад ва қоидаҳои он чӣ гуна тағйир ёфтанд?";
+        case "faq-12":
+          return "Кӯмакпулӣ барои нигоҳубини кӯдаки то 1.5-сола барои шаҳрвандони корманд чӣ тавр ҳисоб карда мешавад?";
+        case "faq-13":
+          return "«Қоидаи даромади сифрӣ» ва баҳодиҳии амвол ҳангоми таъини кӯмакпулиҳо чӣ маъно дорад?";
+        case "faq-14":
+          return "Оё шаҳрвандони хориҷие, ки бо патент кор мекунанд, ба пардохти варақаи беморӣ (больничный) ҳуқуқ доранд?";
         default:
           return originalQ;
       }
@@ -38,6 +54,7 @@ export default function FAQPage() {
   const getFaqAnswer = (id: string, originalA: string) => {
     if (language === "tg") {
       switch (id) {
+        // Миграция и паспорта
         case "faq-1":
           return "Иҷозати зист (ВНЖ) дар Федератсияи Русия ба таври бемӯҳлат (бемаҳдуд) дода мешавад (ба истиснои мутахассисони баландихтисос). Аммо худи бланкаи ҳуҷҷат ҳангоми расидан ба синни 14, 20 ва 45 солагӣ мисли шиносномаи дохилӣ ҳатман бояд иваз карда шавад.";
         case "faq-2":
@@ -54,6 +71,20 @@ export default function FAQPage() {
           return "ИНН аз ҷониби мақомоти андоз (ФНС) дар асоси аризаи шаҳрванди хориҷӣ дар давоми 1–3 рӯз бо доштани қайди муҳоҷиратӣ ва тарҷумаи нотариалии шиноснома дода мешавад. СНИЛС дар Фонди иҷтимоии Русия (СФР) ё аз ҷониби корфармо ҳангоми ба кори расмӣ даромадан тартиб дода мешавад.";
         case "faq-8":
           return "Шахсони зерин ҳуқуқи гирифтани шаҳрвандӣ бо тартиби имтиёзнокро доранд: шахсоне, ки бо шаҳрванди РФ ақди никоҳ дошта, фарзанди муштарак доранд; шахсоне, ки падару модар ё фарзандони болиғи шаҳрванди РФ доранд; хатмкунандагони донишгоҳҳои аккредитатсияшудаи Русия бо дипломи аъло; иштирокчиёни Барномаи давлатии кӯчонидани ҳамватанон.";
+
+        // Пособия и социальные выплаты
+        case "faq-9":
+          return "Кӯмакпулии ягона (Единое пособие) ба оилаҳое, ки кӯдакони аз 0 то 17-сола доранд ва занони ҳомиладоре, ки дар марҳилаҳои аввал ба қайд гирифта шудаанд, пардохт карда мешавад. Шартҳои асосӣ: аризадиҳанда ва кӯдак бояд шаҳрванди РФ бошанд ва дар РФ доимӣ зиндагӣ кунанд (ё хориҷиёни дорои ВНЖ мувофиқи қоидаҳо), ва даромади миёнаи ҳар як узви оила набояд аз ҳадди ақали зиндагии минтақавӣ зиёд бошад. Ҳаҷми пардохт 50%, 75% ё 100%-и ҳадди ақали зиндагии кӯдаконро ташкил медиҳад.";
+        case "faq-10":
+          return "Бале, шаҳрвандони хориҷие, ки дар асоси Иҷозати зист (ВНЖ) дар қаламрави РФ доимӣ истиқомат доранд, ба аксари пардохтҳои иҷтимоии давлатӣ ҳуқуқ доранд, аз ҷумла: кӯмакпулии яквақта ҳангоми таваллуди кӯдак, кӯмакпулии моҳона барои нигоҳубини кӯдак то 1.5-солагӣ ва кӯмакпулӣ барои ҳомиладорӣ ва таваллуд дар сурати фаъолияти расмии меҳнатӣ.";
+        case "faq-11":
+          return "Сармояи модарӣ ба волидон ҳангоми таваллуд (ё фарзандхондии) кӯдак дода мешавад. Мувофиқи қоидаҳои ҷорӣ, сармояи модарӣ танҳо ба кӯдаконе дода мешавад, ки ҳангоми таваллуд шаҳрвандии РФ-ро соҳиб шудаанд ва танҳо ба он волидоне, ки дар вақти таваллуди кӯдак аллакай шаҳрванди РФ буданд. Маблағро барои беҳтар кардани шароити манзил, таҳсили кӯдакон ё пардохтҳои моҳона то 3-солагӣ истифода бурдан мумкин аст.";
+        case "faq-12":
+          return "Барои шаҳрвандоне, ки ба таври расмӣ ба кор қабул шудаанд, кӯмакпулӣ барои нигоҳубини кӯдак то 1.5-солагӣ 40%-и музди миёнаи меҳнатро дар 2 соли тақвимии гузашта ташкил медиҳад, вале на камтар аз ҳадди ақали муқарраркардаи қонун. Муҳим: пардохти кӯмакпулӣ ҳатто ҳангоми барвақт ба кори пурра баромадани падар ё модар пурра нигоҳ дошта мешавад.";
+        case "faq-13":
+          return "Барои таъини Кӯмакпулии ягона ҳамаи аъзои қобили меҳнати оила бояд дар давраи ҳисобӣ ҳадди аққал дар як моҳ даромади расмии тасдиқшуда дошта бошанд (музди меҳнат, нафақа, стипендия, даромад аз худкорӣ) ё сабаби узрноки набудани онро пешниҳод намоянд (нигоҳубини кӯдаки то 3-сола, маъюбӣ, таҳсили рӯзона, мақоми расмии бекорӣ то 6 моҳ). Инчунин моликияти оила: хонаҳо, замин ва мошинҳо санҷида мешавад.";
+        case "faq-14":
+          return "Шаҳрвандони хориҷие, ки дар асоси патент ё шартномаи меҳнатӣ кор мекунанд, ба пардохти варақаи корношоямии муваққатӣ (больничный) ҳуқуқ пайдо мекунанд, ба шарте ки корфармои онҳо дар давоми давраи муқарраршуда ба Фонди иҷтимоии Русия (СФР) саҳмҳои суғуртавиро пардохт намуда бошад.";
         default:
           return originalA;
       }
@@ -61,7 +92,12 @@ export default function FAQPage() {
     return originalA;
   };
 
+  const isBenefitFaq = (id: string) => ["faq-9", "faq-10", "faq-11", "faq-12", "faq-13", "faq-14"].includes(id);
+
   const filteredFaq = MOCK_FAQ.filter((f) => {
+    if (activeFilter === "benefits" && !isBenefitFaq(f.id)) return false;
+    if (activeFilter === "migration" && isBenefitFaq(f.id)) return false;
+
     const q = getFaqQuestion(f.id, f.question).toLowerCase();
     const a = getFaqAnswer(f.id, f.answer).toLowerCase();
     const s = search.toLowerCase();
@@ -80,11 +116,42 @@ export default function FAQPage() {
         </h1>
         <p className="text-gray-500 text-xs sm:text-sm">
           {language === "tg"
-            ? "Ҷавобҳои мутахассисон ба саволҳои асосӣ оид ба муҳоҷират, шиноснома, ВНЖ, РВП ва андозҳо дар соли 2026"
-            : "Ответы юристов на ключевые вопросы по миграционному учету, паспортам, ВНЖ, РВП и налогам в 2026 году"}
+            ? "Ҷавобҳои мутахассисон ба саволҳои асосӣ оид ба муҳоҷират, кӯмакпулиҳо, сармояи модарӣ, ВНЖ, РВП ва андозҳо дар соли 2026"
+            : "Ответы юристов на ключевые вопросы по миграционному учету, пособиям, маткапиталу, ВНЖ, РВП и налогам в 2026 году"}
         </p>
       </div>
 
+      {/* Category Tabs */}
+      <div className="flex space-x-2 border-b border-[#0E7C86]/10 pb-3 overflow-x-auto">
+        <button
+          onClick={() => setActiveFilter("all")}
+          className={`px-4 py-2.5 rounded-xl text-xs font-bold transition whitespace-nowrap ${
+            activeFilter === "all" ? "bg-[#0E7C86] text-white shadow-sm" : "bg-white border border-[#0E7C86]/20 hover:bg-[#FDF2F0]"
+          }`}
+        >
+          {language === "tg" ? "Ҳамаи саволҳо" : "Все вопросы"} ({MOCK_FAQ.length})
+        </button>
+        <button
+          onClick={() => setActiveFilter("benefits")}
+          className={`px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 whitespace-nowrap ${
+            activeFilter === "benefits" ? "bg-[#FF8C42] text-white shadow-sm" : "bg-white border border-[#0E7C86]/20 hover:bg-[#FDF2F0]"
+          }`}
+        >
+          <HeartHandshake className="w-4 h-4" />
+          <span>{language === "tg" ? "Кӯмакпулиҳо ва сармояи модарӣ" : "Пособия и маткапитал"}</span>
+        </button>
+        <button
+          onClick={() => setActiveFilter("migration")}
+          className={`px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 whitespace-nowrap ${
+            activeFilter === "migration" ? "bg-[#0E7C86] text-white shadow-sm" : "bg-white border border-[#0E7C86]/20 hover:bg-[#FDF2F0]"
+          }`}
+        >
+          <ShieldCheck className="w-4 h-4" />
+          <span>{language === "tg" ? "Муҳоҷират ва шиносномаҳо" : "Миграция и паспорта"}</span>
+        </button>
+      </div>
+
+      {/* Search Input */}
       <div className="relative">
         <Search className="w-5 h-5 text-[#2AA9A9] absolute left-4 top-4" />
         <input
@@ -93,31 +160,49 @@ export default function FAQPage() {
           onChange={(e) => setSearch(e.target.value)}
           placeholder={
             language === "tg"
-              ? "Ҷустуҷӯ аз рӯи саволҳо (масалан: ВНЖ, мӯҳлат, 90 рӯз, андоз, шиноснома)..."
-              : "Поиск по вопросам (например: ВНЖ, подтверждение, 90 дней, налоги, паспорт)..."
+              ? "Ҷустуҷӯ аз рӯи саволҳо (масалан: кӯмакпулӣ, сармояи модарӣ, ВНЖ, 90 рӯз, андоз, шиноснома)..."
+              : "Поиск по вопросам (например: единое пособие, маткапитал, ВНЖ, подтверждение, 90 дней, паспорт)..."
           }
           className="w-full pl-12 pr-4 py-4 bg-white border border-[#0E7C86]/20 rounded-2xl text-sm font-semibold outline-none focus:ring-2 focus:ring-[#0E7C86] shadow-sm text-[#08525a]"
         />
       </div>
 
+      {/* FAQ Items List */}
       <div className="space-y-4">
-        {filteredFaq.map((faq) => (
-          <div key={faq.id} className="bg-white p-6 sm:p-7 rounded-3xl border border-[#0E7C86]/10 shadow-sm space-y-3 hover:border-[#2AA9A9]/40 transition">
-            <div className="flex items-start space-x-3.5">
-              <div className="w-9 h-9 rounded-xl bg-[#FDF2F0] text-[#0E7C86] flex items-center justify-center flex-shrink-0 mt-0.5 shadow-sm">
-                <HelpCircle className="w-5 h-5" />
-              </div>
-              <div className="space-y-2">
-                <h3 className="font-extrabold text-base sm:text-lg text-[#08525a] leading-snug">
-                  {getFaqQuestion(faq.id, faq.question)}
-                </h3>
-                <p className="text-xs sm:text-sm text-[#08525a]/80 leading-relaxed font-medium">
-                  {getFaqAnswer(faq.id, faq.answer)}
-                </p>
+        {filteredFaq.map((faq) => {
+          const isBenefit = isBenefitFaq(faq.id);
+          return (
+            <div
+              key={faq.id}
+              className="bg-white p-6 sm:p-7 rounded-3xl border border-[#0E7C86]/10 shadow-sm space-y-3 hover:border-[#2AA9A9]/40 transition"
+            >
+              <div className="flex items-start space-x-3.5">
+                <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5 shadow-sm ${
+                  isBenefit ? "bg-amber-50 text-[#FF8C42]" : "bg-[#FDF2F0] text-[#0E7C86]"
+                }`}>
+                  {isBenefit ? <HeartHandshake className="w-5 h-5" /> : <HelpCircle className="w-5 h-5" />}
+                </div>
+                <div className="space-y-2 flex-1">
+                  <div className="flex justify-between items-center">
+                    <span className={`text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full ${
+                      isBenefit ? "bg-amber-100 text-amber-900" : "bg-[#FDF2F0] text-[#0E7C86]"
+                    }`}>
+                      {isBenefit
+                        ? (language === "tg" ? "Кӯмакпулӣ ва пардохтҳо" : "Пособия и выплаты")
+                        : (language === "tg" ? "Муҳоҷират ва ҳуҷҷатҳо" : "Миграция и документы")}
+                    </span>
+                  </div>
+                  <h3 className="font-extrabold text-base sm:text-lg text-[#08525a] leading-snug">
+                    {getFaqQuestion(faq.id, faq.question)}
+                  </h3>
+                  <p className="text-xs sm:text-sm text-[#08525a]/80 leading-relaxed font-medium">
+                    {getFaqAnswer(faq.id, faq.answer)}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
