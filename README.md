@@ -1,36 +1,99 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🏛️ ГосПомощь (GosPomosh) — Цифровой сервис государственных и миграционных услуг
 
-## Getting Started
+Интерактивная омниканальная CRM-система и веб-платформа для подбора, расчета стоимости госпошлин, ведения клиентских анкет и юридического сопровождения государственных и миграционных услуг в РФ.
 
-First, run the development server:
+🌐 **Production Demo URL:** [https://gosuslugi-olive.vercel.app](https://gosuslugi-olive.vercel.app)  
+📦 **Репозиторий проекта:** [https://github.com/Hafiz0ff/gospomosh](https://github.com/Hafiz0ff/gospomosh)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Ключевые возможности и функционал
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 1. 🌐 Публичный клиентский портал
+* **Каталог государственных услуг (`/services`):** структурированный рубрикатор (ВНЖ, РВП, Гражданство РФ, Патент, ИНН, СНИЛС, замена паспорта) с расчетом госпошлин, сроков и юридического сопровождения.
+* **Мастер интерактивного подбора (Wizard):** 3-шаговый адаптивный опросник, автоматически формирующий индивидуальный чек-лист документов, пошаговый порядок действий и смету.
+* **Единая анкета клиента (`/client/questionnaire`):** 12-шаговая форма с автосохранением черновика в `localStorage`, валидацией ИНН/СНИЛС/паспортов РФ и возможностью дозаполнения.
+* **Интерактивный калькулятор пошлин (`/calculator`):** динамический расчет стоимости с учетом возраста заявителя, срочности и дополнительных юридических опций.
+* **Проверка комплектности документов (`/documents`):** интерактивный чек-лист готовности пакета бумаг к подаче в МВД / МФЦ.
+* **База знаний и FAQ 2026 (`/faq`):** актуальные юридические разъяснения правил пребывания (правило «90 дней в год», дактилоскопия, единое пособие, маткапитал, больничные) в формате раскрывающегося аккордеона.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 2. 🌍 Мультиязычность (Bilingual RU / TJ)
+* Мгновенное переключение между **Русским 🇷🇺 (RU)** и **Таджикским 🇹🇯 (Тоҷикӣ, TJ)** языками с сохранением выбора.
+* Полная локализация интерфейса: главное меню, карточки услуг, калькулятор, шаги Wizard-опросника, справочник FAQ и подсказки анкеты.
 
-## Learn More
+### 3. 🎨 Динамический селектор тем (5 цветовых палитр)
+* **Морской бриз (Deep Teal & Aqua)** — фирменная гамма сервиса.
+* **Гранатовый закат (Garnet & Peach)** — насыщенные гранатовые и персиковые тона.
+* **Космический индиго (Cosmic Indigo & Teal)** — глубокие индиго и бирюзовые акценты.
+* **Бархатная слива (Velvet Plum & Rose)** — бархатные сливовые и розовые оттенки.
+* **Шалфей и Индиго (Sage & Deep Blue)** — шалфейно-желтый мягкий фон и темный текст.
 
-To learn more about Next.js, take a look at the following resources:
+### 4. 💼 Рабочее место менеджера & CRM (`/admin`)
+* **Dashboard оперативных метрик:** счетчики заявок, статус выполнения задач, блок *«Требуют внимания»* (истекающие документы клиентов).
+* **Полноценная CRM-карточка клиента:**
+  * Вкладки: *Обзор*, *Паспорта & ИНН*, *Семья*, *Документы & Сканы*, *Коммуникации (WhatsApp/Звонки)*, *История обращений*.
+  * Маскирование персональных данных в общем списке (`77********34`) и защищенное открытие внутри карточки.
+  * Повторное оформление услуг в 1 клик без повторного ввода данных.
+* **Защищенное хранилище (Supabase Storage):**
+  * Приватный бакет `client-documents` с доступом к оригиналам сканов и PDF исключительно через временные **Signed URLs (300 сек)**.
+  * Нулевой публичный доступ для неавторизованных пользователей.
+* **Серверная генерация PDF (`/api/client/[id]/pdf`):** экспорт официальной анкеты клиента.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🛠️ Стек технологий
 
-## Deploy on Vercel
+* **Фреймворк:** Next.js 16 (App Router, Turbopack, Server Actions, Route Handlers)
+* **Язык:** TypeScript 5 (строгая типизация)
+* **Стилизация:** Tailwind CSS 4, CSS Variables (динамические темы)
+* **Иконки:** Lucide React
+* **База данных и Auth:** Supabase PostgreSQL + Row Level Security (RLS)
+* **Файловое хранилище:** Supabase Storage (Private Buckets + Signed URLs)
+* **Хостинг:** Vercel Production Deployment (24/7 HTTPS)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📦 Локальный запуск и разработка
+
+1. **Клонирование репозитория:**
+   ```bash
+   git clone https://github.com/Hafiz0ff/gospomosh.git
+   cd gospomosh
+   ```
+
+2. **Установка зависимостей:**
+   ```bash
+   npm install
+   ```
+
+3. **Настройка переменных окружения (`.env.local`):**
+   ```env
+   NEXT_PUBLIC_SUPABASE_URL=https://<your-project>.supabase.co
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-anon-key>
+   NEXT_PUBLIC_APP_NAME=ГосПомощь
+   ```
+
+4. **Запуск сервера разработки:**
+   ```bash
+   npm run dev
+   ```
+   Открыть [http://localhost:3000](http://localhost:3000) в браузере.
+
+5. **Сборка production-билда:**
+   ```bash
+   npm run build
+   ```
+
+---
+
+## 🔐 Доступ в демонстрационную панель администратора
+
+* **URL входа:** [https://gosuslugi-olive.vercel.app/admin/login](https://gosuslugi-olive.vercel.app/admin/login)
+* **Email:** `demo@gospomosh.ru` *(или `admin@gospomosh.ru`)*
+* **Пароль:** `AdminPassword2026!`
+
+---
+
+## 📄 Лицензия и дисклеймер
+
+Проект является независимым информационным сервисом юридического сопровождения и не является официальным сайтом государственных органов РФ. Все персональные данные демонстрационных клиентов являются вымышленными.
