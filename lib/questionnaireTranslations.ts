@@ -91,7 +91,7 @@ export interface QuestionnaireLocale {
 
 export const QUESTIONNAIRE_TRANSLATIONS: Record<"ru" | "tg", QuestionnaireLocale> = {
   ru: {
-    docDisclaimer: "⚠️ Все данные в анкете необходимо указывать строго в точном соответствии с вашими официальными документами (паспортом, свидетельствами, справками).",
+    docDisclaimer: "⚠️ Все данные в анкете необходимо указывать строго в точном соответствии с официальными документами.",
     saveAndContinue: "Сохранить и продолжить позже",
     stepOf: (s, t) => `Раздел ${s} из ${t}`,
     passedPercent: (p) => `${p}% готово`,
@@ -179,7 +179,7 @@ export const QUESTIONNAIRE_TRANSLATIONS: Record<"ru" | "tg", QuestionnaireLocale
     }
   },
   tg: {
-    docDisclaimer: "⚠️ Ҳамаи маълумотҳоро дар саволнома қатъиян мувофиқи ҳуҷҷатҳои расмии худ (шиноснома, шаҳодатномаҳо ва маълумотномаҳо) пур намоед.",
+    docDisclaimer: "⚠️ Ҳамаи маълумотҳоро дар саволнома қатъиян мувофиқи ҳуҷҷатҳои расмӣ пур намоед.",
     saveAndContinue: "Сабт кардан",
     stepOf: (s, t) => `Бахши ${s} аз ${t}`,
     passedPercent: (p) => `${p}% тайёр`,
