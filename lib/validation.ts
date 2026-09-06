@@ -227,3 +227,19 @@ export function validateEmail(email: string): boolean {
   if (!email) return true;
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
+
+/**
+ * Formats date string (YYYY-MM-DD) into CIS standard date format (DD.MM.YYYY)
+ */
+export function formatDateRu(dateStr?: string | null): string {
+  if (!dateStr) return "—";
+  const trimmed = dateStr.trim();
+  if (trimmed.includes("-")) {
+    const parts = trimmed.split("-");
+    if (parts.length === 3) {
+      return `${parts[2]}.${parts[1]}.${parts[0]}`;
+    }
+  }
+  return trimmed;
+}
+

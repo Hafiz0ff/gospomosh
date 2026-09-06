@@ -1,6 +1,7 @@
 import ExcelJS from "exceljs";
 import { ClientData } from "./types";
 import { getMaritalStatusLabel } from "./questionnaireTranslations";
+import { formatDateRu } from "./validation";
 
 const STATUS_LABELS: Record<string, { label: string; fg: string; bg: string }> = {
   new: { label: "Новая анкета", fg: "FF0369A1", bg: "FFE0F2FE" },
@@ -144,7 +145,7 @@ export async function exportClientsToExcel(clients: ClientData[]) {
       statusMeta.label,                                                                        // D: Статус
       fullName,                                                                                // E: ФИО
       prof.gender === "male" ? "Мужской" : prof.gender === "female" ? "Женский" : "—",        // F: Пол
-      prof.birth_date || "—",                                                                 // G: Дата рожд
+      prof.birth_date ? formatDateRu(prof.birth_date) : "—",                                  // G: Дата рожд
       prof.birth_place || "—",                                                                 // H: Место рожд
       prof.citizenship || "—",                                                                 // I: Гражданство
       cont.phone || "—",                                                                       // J: Телефон
@@ -154,7 +155,7 @@ export async function exportClientsToExcel(clients: ClientData[]) {
       tax.snils || "Не указан",                                                                // N: СНИЛС
       pass.series && pass.number ? `${pass.series} ${pass.number}` : "—",                      // O: Паспорт
       pass.issuer || "—",                                                                      // P: Кем выдан
-      pass.issue_date || "—",                                                                  // Q: Дата выдачи
+      pass.issue_date ? formatDateRu(pass.issue_date) : "—",                                   // Q: Дата выдачи
       pass.department_code || "—",                                                             // R: Код
       foreignPass.number ? `${foreignPass.series ? foreignPass.series + " " : ""}${foreignPass.number}` : "Нет", // S: Загран
       regAddressStr || "—",                                                                    // T: Адрес
