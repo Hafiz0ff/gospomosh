@@ -264,3 +264,33 @@ export interface ManagerTask {
   priority: 'low' | 'normal' | 'high' | 'urgent';
   created_at: string;
 }
+
+// ==========================================
+// RBAC: ROLES & PERMISSIONS (MODULE 6)
+// ==========================================
+
+export type UserRole = 'admin' | 'manager' | 'operator';
+
+export type AppPermission =
+  | 'clients:read_all'
+  | 'clients:read_assigned'
+  | 'clients:create'
+  | 'clients:edit'
+  | 'clients:delete'
+  | 'clients:export_excel'
+  | 'docs:view'
+  | 'docs:upload'
+  | 'docs:delete'
+  | 'settings:manage'
+  | 'team:manage';
+
+export interface UserProfile {
+  id: string;
+  email?: string;
+  full_name?: string;
+  role: UserRole;
+  is_active: boolean;
+  assigned_client_ids?: string[];
+  created_at?: string;
+  updated_at?: string;
+}
