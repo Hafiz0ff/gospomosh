@@ -372,13 +372,13 @@ export default function AdminPage() {
             <Shield className="w-6 h-6" />
           </div>
           <div>
-            <div className="flex items-center space-x-2">
-              <h1 className="text-xl sm:text-2xl font-black text-[#08525a]">Рабочее место менеджера</h1>
-              <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 text-[10px] font-extrabold uppercase rounded-md border border-emerald-200">
-                CRM 2026
+            <div className="flex items-center space-x-2.5">
+              <h1 className="text-xl sm:text-2xl font-black text-[#08525a]">Панель управления</h1>
+              <span className="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-bold rounded-lg border border-slate-200">
+                ГосПомощь
               </span>
             </div>
-            <p className="text-[#08525a]/60 text-xs">Управление анкетами, экспорт реестра, интеграция WhatsApp и документы</p>
+            <p className="text-[#08525a]/60 text-xs">Реестр клиентов, обработка анкет и документооборот</p>
           </div>
         </div>
 
@@ -888,7 +888,7 @@ export default function AdminPage() {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-[#0E7C86]/10 pb-4">
               <div>
                 <div className="flex items-center space-x-2">
-                  <span className="text-[11px] font-black text-[#0E7C86] uppercase tracking-wider">CRM Досье клиента</span>
+                  <span className="text-[11px] font-black text-[#0E7C86] uppercase tracking-wider">Досье клиента</span>
                   <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black border ${STATUS_CONFIG[selectedClient.status || "new"]?.color || ""}`}>
                     {STATUS_CONFIG[selectedClient.status || "new"]?.label || "Новая"}
                   </span>
