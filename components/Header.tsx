@@ -6,7 +6,7 @@ import ThemeSelector from "@/components/ThemeSelector";
 import LanguageSelector from "@/components/LanguageSelector";
 import { useLanguage } from "@/lib/languageContext";
 import {
-  HelpCircle, Shield, UserCheck, Menu, X
+  HelpCircle, Shield, UserCheck, Menu, X, FileText
 } from "lucide-react";
 
 export default function Header() {
@@ -31,7 +31,7 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-6 text-sm font-semibold text-[#08525a]/80">
-            <Link href="/client/questionnaire" className="hover:text-[#0E7C86] transition flex items-center space-x-1.5 text-[#0E7C86] font-bold">
+            <Link href="/" className="hover:text-[#0E7C86] transition flex items-center space-x-1.5 text-[#0E7C86] font-bold">
               <UserCheck className="w-4 h-4 text-[#FF8C42]" />
               <span>{t.clientQuestionnaire}</span>
             </Link>
@@ -46,18 +46,11 @@ export default function Header() {
             <LanguageSelector />
             <ThemeSelector />
             <Link
-              href="/client/questionnaire"
-              className="bg-[#FF8C42] hover:bg-[#E66E26] text-white font-bold text-xs sm:text-sm px-4 sm:px-5 py-2.5 rounded-xl shadow-md shadow-[#FF8C42]/20 transition flex items-center space-x-2 active:scale-95"
-            >
-              <UserCheck className="w-4 h-4" />
-              <span>{t.btnFillQuestionnaire}</span>
-            </Link>
-            <Link
               href="/admin"
-              className="text-[#0E7C86]/50 hover:text-[#0E7C86] p-2 rounded-lg transition"
-              title={t.adminPanel}
+              className="bg-[#0E7C86] hover:bg-[#08525a] text-white font-bold text-xs sm:text-sm px-4 sm:px-5 py-2.5 rounded-xl shadow-md shadow-[#0E7C86]/20 transition flex items-center space-x-2 active:scale-95"
             >
-              <Shield className="w-5 h-5" />
+              <Shield className="w-4 h-4 text-[#FFD9A0]" />
+              <span>{t.adminPanel}</span>
             </Link>
           </div>
 
@@ -66,10 +59,11 @@ export default function Header() {
             <LanguageSelector />
             <ThemeSelector />
             <Link
-              href="/client/questionnaire"
-              className="bg-[#FF8C42] text-white font-bold text-xs px-3 py-2 rounded-xl transition flex items-center space-x-1"
+              href="/admin"
+              className="bg-[#0E7C86] text-white font-bold text-xs px-3 py-2 rounded-xl transition flex items-center space-x-1"
             >
-              <span>{t.clientQuestionnaire}</span>
+              <Shield className="w-3.5 h-3.5" />
+              <span>CRM</span>
             </Link>
             <button
               onClick={() => setIsOpen(!isOpen)}
@@ -87,7 +81,7 @@ export default function Header() {
         <div className="lg:hidden bg-white border-b border-[#0E7C86]/10 px-4 pt-2 pb-6 space-y-3 animate-in slide-in-from-top duration-200">
           <nav className="flex flex-col space-y-2 text-sm font-semibold text-[#08525a]">
             <Link
-              href="/client/questionnaire"
+              href="/"
               onClick={() => setIsOpen(false)}
               className="p-3 rounded-xl bg-[#FDF2F0] text-[#0E7C86] font-bold flex items-center space-x-3 transition"
             >
