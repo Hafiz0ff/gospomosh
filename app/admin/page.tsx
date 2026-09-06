@@ -79,6 +79,9 @@ export default function AdminPage() {
   const [selectedServiceSlug, setSelectedServiceSlug] = useState(MOCK_SERVICES[0]?.slug || "");
   const [leadComment, setLeadComment] = useState("");
 
+  // Module 1: Official Department Forms (ready under the hood, shown via ?forms=true or flag)
+  const [showOfficialForms, setShowOfficialForms] = useState(false);
+
   // Document Upload State
   const [docCategory, setDocCategory] = useState<"passports" | "tax" | "family" | "immigration" | "other">("passports");
   const [docTitle, setDocTitle] = useState("");
@@ -96,6 +99,13 @@ export default function AdminPage() {
         if (session || hasLocalDemoAuth) {
           setIsAuthenticated(true);
           loadData();
+
+          if (typeof window !== "undefined") {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get("forms") === "true" || params.get("features") === "forms" || params.get("module1") === "true") {
+              setShowOfficialForms(true);
+            }
+          }
         } else {
           router.push("/admin/login");
         }
@@ -917,6 +927,56 @@ export default function AdminPage() {
                   <Printer className="w-3.5 h-3.5 text-[#0E7C86]" />
                   <span>Печать PDF</span>
                 </a>
+
+                {/* Module 1: Official Department Forms (hidden from customer until enabled) */}
+                {showOfficialForms && (
+                  <div className="relative group">
+                    <button
+                      type="button"
+                      className="bg-[#0E7C86]/10 hover:bg-[#0E7C86]/20 text-[#0E7C86] font-bold text-xs px-3 py-2 rounded-xl transition flex items-center space-x-1.5 border border-[#0E7C86]/30"
+                    >
+                      <FileText className="w-3.5 h-3.5" />
+                      <span>Официальные бланки ▾</span>
+                    </button>
+                    <div className="absolute right-0 top-full mt-1.5 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 p-2 hidden group-hover:block z-50">
+                      <div className="text-[10px] font-extrabold uppercase tracking-wider text-gray-400 px-2.5 py-1">
+                        Бланки РФ (Сентябрь 2026)
+                      </div>
+                      <a
+                        href={`/api/client/${selectedClient.id}/forms/passport-1p`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block px-2.5 py-2 text-xs font-bold text-[#08525a] hover:bg-[#FDF2F0] rounded-xl transition"
+                      >
+                        📄 Форма 1П (Паспорт РФ)
+                      </a>
+                      <a
+                        href={`/api/client/${selectedClient.id}/forms/tax-inn`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block px-2.5 py-2 text-xs font-bold text-[#08525a] hover:bg-[#FDF2F0] rounded-xl transition"
+                      >
+                        📄 Форма 2-2-Учет (ИНН)
+                      </a>
+                      <a
+                        href={`/api/client/${selectedClient.id}/forms/migration-notice`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block px-2.5 py-2 text-xs font-bold text-[#08525a] hover:bg-[#FDF2F0] rounded-xl transition"
+                      >
+                        📄 Миграционный учет (Прибытие)
+                      </a>
+                      <a
+                        href={`/api/client/${selectedClient.id}/forms/rvp-vnzh`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block px-2.5 py-2 text-xs font-bold text-[#08525a] hover:bg-[#FDF2F0] rounded-xl transition"
+                      >
+                        📄 Заявление на ВНЖ / РВП
+                      </a>
+                    </div>
+                  </div>
+                )}
 
                 {/* Toggle In-Place Edit Mode */}
                 <button
