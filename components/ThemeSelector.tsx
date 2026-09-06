@@ -1,11 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
-import { useTheme, THEMES, ThemeKey } from "@/lib/themeContext";
+import { useTheme, THEMES } from "@/lib/themeContext";
+import { useLanguage } from "@/lib/languageContext";
 import { Palette, Check } from "lucide-react";
 
 export default function ThemeSelector() {
   const { currentTheme, setTheme } = useTheme();
+  const { language } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -13,21 +15,22 @@ export default function ThemeSelector() {
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="p-2 rounded-xl border border-black/10 hover:bg-black/5 transition flex items-center space-x-1.5 text-xs font-bold shadow-sm bg-white"
-        title="Выбрать цветовую тему"
+        title={language === "tg" ? "Интихоби намуди зоҳирӣ" : "Выбрать цветовую тему"}
       >
         <Palette className="w-4 h-4 text-[var(--color-primary)]" />
-        <span className="hidden sm:inline">Тема</span>
+        <span className="hidden sm:inline">{language === "tg" ? "Мавзӯъ" : "Тема"}</span>
       </button>
 
       {isOpen && (
         <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl border border-gray-200 shadow-2xl p-3 z-50 space-y-2 animate-in fade-in duration-150 text-gray-800">
           <div className="text-[11px] font-extrabold uppercase text-gray-400 px-2">
-            Выберите цветовую гамму:
+            {language === "tg" ? "Ранги саҳифаро интихоб кунед:" : "Выберите цветовую гамму:"}
           </div>
 
           <div className="space-y-1.5">
             {Object.values(THEMES).map((t) => {
               const isSelected = currentTheme === t.key;
+              const title = language === "tg" ? t.nameTg : t.name;
               return (
                 <button
                   key={t.key}
@@ -46,7 +49,7 @@ export default function ThemeSelector() {
                       <div className="w-3.5 h-3.5 rounded-full" style={{ backgroundColor: t.colors.secondary }} />
                       <div className="w-3.5 h-3.5 rounded-full" style={{ backgroundColor: t.colors.bg }} />
                     </div>
-                    <span>{t.name}</span>
+                    <span>{title}</span>
                   </div>
                   {isSelected && <Check className="w-4 h-4 text-emerald-600" />}
                 </button>

@@ -7,6 +7,7 @@ export type ThemeKey = "teal" | "garnet" | "indigo" | "plum" | "sage";
 export interface ThemeConfig {
   key: ThemeKey;
   name: string;
+  nameTg: string;
   colors: {
     primary: string;       // Primary buttons, logos, active tabs
     primaryHover: string;
@@ -21,10 +22,11 @@ export interface ThemeConfig {
 }
 
 export const THEMES: Record<ThemeKey, ThemeConfig> = {
-  // 1. Текущая палитра (Deep Teal & Aqua)
+  // 1. Текущая палитра
   teal: {
     key: "teal",
-    name: "Морской бриз (Deep Teal)",
+    name: "Морской бриз",
+    nameTg: "Насими баҳрӣ",
     colors: {
       primary: "#0E7C86",
       primaryHover: "#08525a",
@@ -40,7 +42,8 @@ export const THEMES: Record<ThemeKey, ThemeConfig> = {
   // 2. Garnet Red & Dark Orchid & Sunset Peach
   garnet: {
     key: "garnet",
-    name: "Гранатовый закат (Garnet & Peach)",
+    name: "Гранатовый закат",
+    nameTg: "Ғуруби анорӣ",
     colors: {
       primary: "#7D0633",
       primaryHover: "#5c0425",
@@ -56,7 +59,8 @@ export const THEMES: Record<ThemeKey, ThemeConfig> = {
   // 3. Cosmic Indigo & Deep Teal & Peach Linen
   indigo: {
     key: "indigo",
-    name: "Космический индиго (Cosmic Indigo)",
+    name: "Космический индиго",
+    nameTg: "Индигои кайҳонӣ",
     colors: {
       primary: "#0A043C",
       primaryHover: "#03506F",
@@ -72,7 +76,8 @@ export const THEMES: Record<ThemeKey, ThemeConfig> = {
   // 4. Velvet Plum & Raspberry Rose & Rose Cashmere
   plum: {
     key: "plum",
-    name: "Бархатная слива (Velvet Plum)",
+    name: "Бархатная слива",
+    nameTg: "Олуи махмалӣ",
     colors: {
       primary: "#432E54",
       primaryHover: "#322240",
@@ -88,7 +93,8 @@ export const THEMES: Record<ThemeKey, ThemeConfig> = {
   // 5. Deep Blue-Black & Evening Indigo & Muted Sage Yellow
   sage: {
     key: "sage",
-    name: "Шалфей и Индиго (Sage & Indigo)",
+    name: "Шалфей и Индиго",
+    nameTg: "Мармарак ва Индиго",
     colors: {
       primary: "#1B2430",
       primaryHover: "#51557E",
