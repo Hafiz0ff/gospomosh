@@ -6,7 +6,7 @@ import ThemeSelector from "@/components/ThemeSelector";
 import LanguageSelector from "@/components/LanguageSelector";
 import { useLanguage } from "@/lib/languageContext";
 import {
-  Search, FileText, CheckSquare, Calculator, HelpCircle, Shield, UserCheck, Menu, X
+  HelpCircle, Shield, UserCheck, Menu, X
 } from "lucide-react";
 
 export default function Header() {
@@ -31,21 +31,9 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-6 text-sm font-semibold text-[#08525a]/80">
-            <Link href="/services" className="hover:text-[#0E7C86] transition flex items-center space-x-1.5">
-              <FileText className="w-4 h-4 text-[#2AA9A9]" />
-              <span>{t.catalog}</span>
-            </Link>
             <Link href="/client/questionnaire" className="hover:text-[#0E7C86] transition flex items-center space-x-1.5 text-[#0E7C86] font-bold">
               <UserCheck className="w-4 h-4 text-[#FF8C42]" />
               <span>{t.clientQuestionnaire}</span>
-            </Link>
-            <Link href="/documents" className="hover:text-[#0E7C86] transition flex items-center space-x-1.5">
-              <CheckSquare className="w-4 h-4 text-[#2AA9A9]" />
-              <span>{t.checkDocs}</span>
-            </Link>
-            <Link href="/calculator" className="hover:text-[#0E7C86] transition flex items-center space-x-1.5">
-              <Calculator className="w-4 h-4 text-[#2AA9A9]" />
-              <span>{t.calculator}</span>
             </Link>
             <Link href="/faq" className="hover:text-[#0E7C86] transition flex items-center space-x-1.5">
               <HelpCircle className="w-4 h-4 text-[#2AA9A9]" />
@@ -58,11 +46,11 @@ export default function Header() {
             <LanguageSelector />
             <ThemeSelector />
             <Link
-              href="/wizard/vid-na-zhitelstvo"
+              href="/client/questionnaire"
               className="bg-[#FF8C42] hover:bg-[#E66E26] text-white font-bold text-xs sm:text-sm px-4 sm:px-5 py-2.5 rounded-xl shadow-md shadow-[#FF8C42]/20 transition flex items-center space-x-2 active:scale-95"
             >
-              <Search className="w-4 h-4" />
-              <span>{t.pickService}</span>
+              <UserCheck className="w-4 h-4" />
+              <span>{t.btnFillQuestionnaire}</span>
             </Link>
             <Link
               href="/admin"
@@ -78,10 +66,10 @@ export default function Header() {
             <LanguageSelector />
             <ThemeSelector />
             <Link
-              href="/wizard/vid-na-zhitelstvo"
+              href="/client/questionnaire"
               className="bg-[#FF8C42] text-white font-bold text-xs px-3 py-2 rounded-xl transition flex items-center space-x-1"
             >
-              <span>{t.pickBtn}</span>
+              <span>{t.clientQuestionnaire}</span>
             </Link>
             <button
               onClick={() => setIsOpen(!isOpen)}
@@ -99,36 +87,12 @@ export default function Header() {
         <div className="lg:hidden bg-white border-b border-[#0E7C86]/10 px-4 pt-2 pb-6 space-y-3 animate-in slide-in-from-top duration-200">
           <nav className="flex flex-col space-y-2 text-sm font-semibold text-[#08525a]">
             <Link
-              href="/services"
-              onClick={() => setIsOpen(false)}
-              className="p-3 rounded-xl hover:bg-[#FDF2F0] flex items-center space-x-3 transition"
-            >
-              <FileText className="w-5 h-5 text-[#2AA9A9]" />
-              <span>{t.catalog}</span>
-            </Link>
-            <Link
               href="/client/questionnaire"
               onClick={() => setIsOpen(false)}
               className="p-3 rounded-xl bg-[#FDF2F0] text-[#0E7C86] font-bold flex items-center space-x-3 transition"
             >
               <UserCheck className="w-5 h-5 text-[#FF8C42]" />
               <span>{t.clientQuestionnaire}</span>
-            </Link>
-            <Link
-              href="/documents"
-              onClick={() => setIsOpen(false)}
-              className="p-3 rounded-xl hover:bg-[#FDF2F0] flex items-center space-x-3 transition"
-            >
-              <CheckSquare className="w-5 h-5 text-[#2AA9A9]" />
-              <span>{t.checkDocs}</span>
-            </Link>
-            <Link
-              href="/calculator"
-              onClick={() => setIsOpen(false)}
-              className="p-3 rounded-xl hover:bg-[#FDF2F0] flex items-center space-x-3 transition"
-            >
-              <Calculator className="w-5 h-5 text-[#2AA9A9]" />
-              <span>{t.calculator}</span>
             </Link>
             <Link
               href="/faq"

@@ -12,7 +12,7 @@ export default function Footer() {
   return (
     <footer className="bg-[#08525a] text-white/80 text-sm border-t border-[#0E7C86]/20 mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           <div>
             <div className="flex items-center space-x-2.5 mb-4">
               <div className="w-8 h-8 rounded-lg bg-[#FF8C42] flex items-center justify-center text-white font-bold text-lg">
@@ -30,20 +30,9 @@ export default function Footer() {
           <div>
             <h4 className="text-[#FFD9A0] font-bold mb-4 text-xs uppercase tracking-wider">{t.footerSections}</h4>
             <ul className="space-y-2.5 text-xs">
-              <li><Link href="/services" className="hover:text-white transition">{t.catalog}</Link></li>
-              <li><Link href="/documents" className="hover:text-white transition">{t.checkDocs}</Link></li>
-              <li><Link href="/calculator" className="hover:text-white transition">{t.calculator}</Link></li>
+              <li><Link href="/client/questionnaire" className="hover:text-white transition font-bold text-[#FF8C42]">{t.clientQuestionnaire}</Link></li>
               <li><Link href="/faq" className="hover:text-white transition">{t.faq}</Link></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-[#FFD9A0] font-bold mb-4 text-xs uppercase tracking-wider">{t.footerPopular}</h4>
-            <ul className="space-y-2.5 text-xs">
-              <li><Link href="/services/vid-na-zhitelstvo" className="hover:text-white transition">Иҷозати зист (ВНЖ)</Link></li>
-              <li><Link href="/services/rvp" className="hover:text-white transition">Истиқомати муваққатӣ (РВП)</Link></li>
-              <li><Link href="/services/zamena-pasporta" className="hover:text-white transition">Ивази шиносномаи РФ</Link></li>
-              <li><Link href="/services/zagranpasport" className="hover:text-white transition">Шиносномаи хориҷӣ (10 сола)</Link></li>
+              <li><Link href="/privacy" className="hover:text-white transition">Политика конфиденциальности</Link></li>
             </ul>
           </div>
 
