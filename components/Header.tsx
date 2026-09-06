@@ -47,10 +47,11 @@ export default function Header() {
             <ThemeSelector />
             <Link
               href="/admin"
-              className="bg-[#0E7C86] hover:bg-[#08525a] text-white font-bold text-xs sm:text-sm px-4 sm:px-5 py-2.5 rounded-xl shadow-md shadow-[#0E7C86]/20 transition flex items-center space-x-2 active:scale-95"
+              className="p-2.5 rounded-xl bg-[#0E7C86] hover:bg-[#08525a] text-white shadow-md shadow-[#0E7C86]/20 transition flex items-center justify-center active:scale-95"
+              title={t.adminPanel}
+              aria-label={t.adminPanel}
             >
-              <Shield className="w-4 h-4 text-[#FFD9A0]" />
-              <span>{t.adminPanel}</span>
+              <Shield className="w-5 h-5 text-[#FFD9A0]" />
             </Link>
           </div>
 
@@ -60,10 +61,11 @@ export default function Header() {
             <ThemeSelector />
             <Link
               href="/admin"
-              className="bg-[#0E7C86] text-white font-bold text-xs px-3 py-2 rounded-xl transition flex items-center space-x-1"
+              className="p-2 rounded-xl bg-[#0E7C86] text-white transition flex items-center justify-center"
+              title={t.adminPanel}
+              aria-label={t.adminPanel}
             >
-              <Shield className="w-3.5 h-3.5" />
-              <span>CRM</span>
+              <Shield className="w-4 h-4 text-[#FFD9A0]" />
             </Link>
             <button
               onClick={() => setIsOpen(!isOpen)}
