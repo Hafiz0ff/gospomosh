@@ -1,17 +1,23 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { COUNTRIES, validateINN, validateSNILS, validatePhone, validateEmail } from "@/lib/validation";
+import {
+  COUNTRIES, validateINN, validateSNILS, validatePhone, validateEmail,
+  formatPhoneNumber, formatPassportSeries, formatPassportNumber,
+  formatDepartmentCode, formatSNILSNumber, formatINNNumber, calculateAge
+} from "@/lib/validation";
 import { FullClientQuestionnaire, Child, ClientDocument } from "@/lib/types";
 import { saveQuestionnaire } from "@/lib/dataService";
 import { submitQuestionnaireAction } from "@/app/actions/submitQuestionnaire";
+import { uploadClientDocument, getDocumentSignedUrl } from "@/lib/storageService";
 import { useLanguage } from "@/lib/languageContext";
 import { QUESTIONNAIRE_TRANSLATIONS } from "@/lib/questionnaireTranslations";
 import {
   ChevronRight, CheckCircle2, ShieldAlert, User, Globe, FileText,
   CreditCard, PhoneCall, MapPin, Heart, Users, Baby, FolderPlus, CheckSquare,
-  AlertCircle, Sparkles, CheckCircle, RefreshCw
+  AlertCircle, Sparkles, CheckCircle, RefreshCw, Camera, Upload, Eye, Printer, Download,
+  Trash2, Plus, Calendar
 } from "lucide-react";
 
 export default function ClientQuestionnaireHomePage() {
@@ -22,6 +28,15 @@ export default function ClientQuestionnaireHomePage() {
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // File upload state for Step 10
+  const [isUploading, setIsUploading] = useState(false);
+  const [newDocType, setNewDocType] = useState("");
+  const [newDocNumber, setNewDocNumber] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Printable ref
+  const printableRef = useRef<HTMLDivElement>(null);
 
   // FORM STATE
   const [q, setQ] = useState<FullClientQuestionnaire>({
@@ -171,19 +186,34 @@ export default function ClientQuestionnaireHomePage() {
     saveDraftLocally({ ...q, children: updated });
   };
 
-  // DOCS LOGIC
-  const addDoc = () => {
-    const newDoc: ClientDocument = {
-      id: "doc-" + Date.now(),
-      document_type: "Свидетельство о рождении",
-      document_number: ""
-    };
-    saveDraftLocally({ ...q, documents: [...q.documents, newDoc] });
-  };
+  // DOCS & CAMERA UPLOAD LOGIC
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-  const updateDoc = (id: string, field: keyof ClientDocument, val: any) => {
-    const updated = q.documents.map(d => d.id === id ? { ...d, [field]: val } : d);
-    saveDraftLocally({ ...q, documents: updated });
+    setIsUploading(true);
+    try {
+      const clientId = clientQuestionnaireId || `temp-${Date.now()}`;
+      const res = await uploadClientDocument(clientId, "other", file);
+      
+      const newDoc: ClientDocument = {
+        id: "doc-" + Date.now(),
+        document_type: newDocType || file.name.slice(0, 30),
+        document_number: newDocNumber || res.path || file.name,
+        notes: res.path ? `Файл: ${file.name}` : undefined
+      };
+
+      const updated = { ...q, documents: [...q.documents, newDoc] };
+      saveDraftLocally(updated);
+      setNewDocType("");
+      setNewDocNumber("");
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      alert(language === "tg" ? "Ҳуҷҷат / Акс бомуваффақият илова шуд!" : "Документ / Фото успешно прикреплено!");
+    } catch (err: any) {
+      alert("Ошибка прикрепления: " + (err.message || "Не удалось загрузить"));
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const removeDoc = (id: string) => {
@@ -205,6 +235,7 @@ export default function ClientQuestionnaireHomePage() {
         alert(res.error || (language === "tg" ? "Хатогӣ ҳангоми сабти саволнома" : "Ошибка сохранения анкеты"));
         return;
       }
+      setClientQuestionnaireId(res.clientId || res.questionnaireId || "cl-1");
       localStorage.removeItem("gospomosh_draft_q");
       setIsSubmitted(true);
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -213,6 +244,10 @@ export default function ClientQuestionnaireHomePage() {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handlePrintPDF = () => {
+    window.print();
   };
 
   const resetForm = () => {
@@ -294,6 +329,7 @@ export default function ClientQuestionnaireHomePage() {
   };
 
   const progressPercent = Math.round((step / 12) * 100);
+  const clientAge = calculateAge(q.profile.birth_date, language);
 
   // IF SUBMITTED: SHOW SUCCESS SCREEN
   if (isSubmitted) {
@@ -333,17 +369,24 @@ export default function ClientQuestionnaireHomePage() {
 
         <div className="flex flex-col sm:flex-row justify-center gap-3 pt-4">
           <button
-            onClick={resetForm}
+            onClick={handlePrintPDF}
             className="bg-[#0E7C86] hover:bg-[#08525a] text-white font-bold text-sm px-6 py-3.5 rounded-2xl transition shadow-md flex items-center justify-center space-x-2"
           >
+            <Printer className="w-4 h-4" />
+            <span>{language === "tg" ? "Чоп / Сабт ба PDF" : "Распечатать / Сохранить в PDF"}</span>
+          </button>
+          <button
+            onClick={resetForm}
+            className="bg-white hover:bg-gray-50 text-[#08525a] border border-[#0E7C86]/20 font-bold text-sm px-6 py-3.5 rounded-2xl transition shadow-sm flex items-center justify-center space-x-2"
+          >
             <RefreshCw className="w-4 h-4" />
-            <span>{language === "tg" ? "Пур кардани саволномаи нав" : "Заполнить новую анкету"}</span>
+            <span>{language === "tg" ? "Саволномаи нав" : "Заполнить новую анкету"}</span>
           </button>
           <Link
             href="/admin"
-            className="bg-white hover:bg-gray-50 text-[#08525a] border border-[#0E7C86]/20 font-bold text-sm px-6 py-3.5 rounded-2xl transition shadow-sm flex items-center justify-center"
+            className="bg-[#FF8C42] hover:bg-[#E66E26] text-white font-bold text-sm px-6 py-3.5 rounded-2xl transition shadow-sm flex items-center justify-center"
           >
-            <span>{language === "tg" ? "Ба Панели мудир (CRM)" : "Вход в Панель менеджера (CRM)"}</span>
+            <span>CRM</span>
           </Link>
         </div>
       </div>
@@ -364,6 +407,14 @@ export default function ClientQuestionnaireHomePage() {
         <div className="flex items-center space-x-3">
           {saveMessage && <span className="text-xs font-bold text-[#FF8C42]">{saveMessage}</span>}
           <button
+            onClick={handlePrintPDF}
+            className="text-xs font-bold px-3 py-1.5 bg-white border border-[#0E7C86]/20 hover:bg-[#FDF2F0] text-[#08525a] rounded-xl transition flex items-center space-x-1.5 shadow-sm"
+            title="Распечатать или сохранить в PDF"
+          >
+            <Printer className="w-3.5 h-3.5 text-[#0E7C86]" />
+            <span className="hidden sm:inline">{language === "tg" ? "Чоп ба PDF" : "Печать / PDF"}</span>
+          </button>
+          <button
             onClick={handleSaveDraft}
             className="text-xs font-bold px-3.5 py-1.5 bg-[#FFD9A0]/50 hover:bg-[#FFD9A0] text-[#08525a] rounded-xl transition"
           >
@@ -373,7 +424,7 @@ export default function ClientQuestionnaireHomePage() {
       </div>
 
       {/* DOCUMENT ACCURACY DISCLAIMER */}
-      <div className="bg-[#FFD9A0]/25 border border-[#FF8C42]/30 rounded-2xl p-3.5 sm:p-4 text-xs text-[#08525a] flex items-start space-x-2.5 shadow-sm">
+      <div className="bg-[#FFD9A0]/25 border border-[#FF8C42]/30 rounded-2xl p-3.5 sm:p-4 text-xs text-[#08525a] flex items-start space-x-2.5 shadow-sm print:hidden">
         <AlertCircle className="w-4 h-4 text-[#FF8C42] flex-shrink-0 mt-0.5" />
         <p className="leading-relaxed font-semibold">
           {tq.docDisclaimer}
@@ -381,12 +432,12 @@ export default function ClientQuestionnaireHomePage() {
       </div>
 
       {/* STEPPER PROGESS */}
-      <div className="bg-white rounded-3xl border border-[#0E7C86]/10 p-6 sm:p-8 shadow-sm space-y-6 print:hidden">
-        <div className="flex justify-between items-center text-xs font-bold text-[#08525a]">
+      <div className="bg-white rounded-3xl border border-[#0E7C86]/10 p-6 sm:p-8 shadow-sm space-y-6">
+        <div className="flex justify-between items-center text-xs font-bold text-[#08525a] print:hidden">
           <span>{tq.stepOf(step, 12)}</span>
           <span>{tq.passedPercent(progressPercent)}</span>
         </div>
-        <div className="w-full bg-[#FDF2F0] h-3 rounded-full overflow-hidden">
+        <div className="w-full bg-[#FDF2F0] h-3 rounded-full overflow-hidden print:hidden">
           <div
             className="bg-[#0E7C86] h-full rounded-full transition-all duration-300 ease-out"
             style={{ width: `${progressPercent}%` }}
@@ -437,7 +488,14 @@ export default function ClientQuestionnaireHomePage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
-                <label className="block text-xs font-bold text-[#08525a] mb-1">{tq.fields.birthDate}</label>
+                <div className="flex justify-between items-center mb-1">
+                  <label className="block text-xs font-bold text-[#08525a]">{tq.fields.birthDate}</label>
+                  {clientAge && (
+                    <span className="text-[11px] font-extrabold text-[#0E7C86] bg-[#0E7C86]/10 px-2 py-0.5 rounded-full">
+                      {clientAge.text}
+                    </span>
+                  )}
+                </div>
                 <input
                   type="date"
                   required
@@ -536,10 +594,11 @@ export default function ClientQuestionnaireHomePage() {
                   <input
                     type="text"
                     required
+                    maxLength={5}
                     value={q.internal_passport.series}
-                    onChange={(e) => setQ({ ...q, internal_passport: { ...q.internal_passport, series: e.target.value } })}
-                    placeholder="4510"
-                    className="w-full p-3 bg-[#FDF2F0]/50 border border-[#0E7C86]/20 rounded-xl text-sm font-semibold"
+                    onChange={(e) => setQ({ ...q, internal_passport: { ...q.internal_passport, series: formatPassportSeries(e.target.value) } })}
+                    placeholder="45 10"
+                    className="w-full p-3 bg-[#FDF2F0]/50 border border-[#0E7C86]/20 rounded-xl text-sm font-semibold font-mono"
                   />
                 </div>
                 <div>
@@ -547,10 +606,11 @@ export default function ClientQuestionnaireHomePage() {
                   <input
                     type="text"
                     required
+                    maxLength={6}
                     value={q.internal_passport.number}
-                    onChange={(e) => setQ({ ...q, internal_passport: { ...q.internal_passport, number: e.target.value } })}
+                    onChange={(e) => setQ({ ...q, internal_passport: { ...q.internal_passport, number: formatPassportNumber(e.target.value) } })}
                     placeholder="123456"
-                    className="w-full p-3 bg-[#FDF2F0]/50 border border-[#0E7C86]/20 rounded-xl text-sm font-semibold"
+                    className="w-full p-3 bg-[#FDF2F0]/50 border border-[#0E7C86]/20 rounded-xl text-sm font-semibold font-mono"
                   />
                 </div>
               </div>
@@ -570,10 +630,11 @@ export default function ClientQuestionnaireHomePage() {
                   <label className="block text-xs font-bold text-[#08525a] mb-1">{tq.fields.departmentCode}</label>
                   <input
                     type="text"
+                    maxLength={7}
                     value={q.internal_passport.department_code || ""}
-                    onChange={(e) => setQ({ ...q, internal_passport: { ...q.internal_passport, department_code: e.target.value } })}
+                    onChange={(e) => setQ({ ...q, internal_passport: { ...q.internal_passport, department_code: formatDepartmentCode(e.target.value) } })}
                     placeholder="770-001"
-                    className="w-full p-3 bg-[#FDF2F0]/50 border border-[#0E7C86]/20 rounded-xl text-sm font-semibold"
+                    className="w-full p-3 bg-[#FDF2F0]/50 border border-[#0E7C86]/20 rounded-xl text-sm font-semibold font-mono"
                   />
                 </div>
               </div>
@@ -635,11 +696,11 @@ export default function ClientQuestionnaireHomePage() {
             </div>
 
             <div className="p-4 bg-[#FFD9A0]/30 rounded-2xl border border-[#FFD9A0] text-xs text-[#08525a] space-y-1">
-              <span className="font-bold block">💡 {language === "tg" ? "Маълумот:" : "Обратите внимание:"}</span>
+              <span className="font-bold block">💡 {language === "tg" ? "Маълумот:" : "Автоформатирование и валидация:"}</span>
               <p>
                 {language === "tg"
-                  ? "Дурустии математикии рақамҳо (рақамҳои назоратӣ) санҷида мешавад."
-                  : "Проверяется математическая корректность номеров (контрольные цифры)."}
+                  ? "Рақамҳо ба таври худкор формат мешаванд ва дурустии онҳо санҷида мешавад."
+                  : "Номера автоматически форматируются дефисами и пробелами, а контрольная сумма валидируется мгновенно."}
               </p>
             </div>
 
@@ -651,9 +712,9 @@ export default function ClientQuestionnaireHomePage() {
                   maxLength={12}
                   value={q.tax.inn || ""}
                   onChange={(e) => {
-                    const val = e.target.value;
-                    setQ({ ...q, tax: { ...q.tax, inn: val } });
-                    const res = validateINN(val);
+                    const formatted = formatINNNumber(e.target.value);
+                    setQ({ ...q, tax: { ...q.tax, inn: formatted } });
+                    const res = validateINN(formatted);
                     setInnError(res.isValid ? null : res.message || null);
                   }}
                   placeholder="771234567890"
@@ -666,15 +727,15 @@ export default function ClientQuestionnaireHomePage() {
                 <label className="block text-xs font-bold text-[#08525a] mb-1">{tq.fields.snils}</label>
                 <input
                   type="text"
-                  maxLength={11}
+                  maxLength={14}
                   value={q.tax.snils || ""}
                   onChange={(e) => {
-                    const val = e.target.value;
-                    setQ({ ...q, tax: { ...q.tax, snils: val } });
-                    const res = validateSNILS(val);
+                    const formatted = formatSNILSNumber(e.target.value);
+                    setQ({ ...q, tax: { ...q.tax, snils: formatted } });
+                    const res = validateSNILS(formatted);
                     setSnilsError(res.isValid ? null : res.message || null);
                   }}
-                  placeholder="12345678901"
+                  placeholder="123-456-789 01"
                   className="w-full p-3 bg-[#FDF2F0]/50 border border-[#0E7C86]/20 rounded-xl text-sm font-semibold font-mono"
                 />
                 {snilsError && <span className="text-xs font-bold text-[#FF8C42] mt-1 block">{snilsError}</span>}
@@ -690,6 +751,12 @@ export default function ClientQuestionnaireHomePage() {
               <h2 className="text-xl font-extrabold">{tq.steps[5].title}</h2>
             </div>
 
+            <div className="p-3 bg-white rounded-xl border border-[#0E7C86]/10 text-xs text-[#08525a] font-medium">
+              💡 {language === "tg"
+                ? "Барои рақамҳои тоҷикӣ (+992) ё русӣ (+7) рақамҳоро ворид кунед — формат худкор татбиқ мегардад."
+                : "Поддерживается ввод российских (+7) и таджикских (+992) номеров с автоматическим разделением скобками и дефисами."}
+            </div>
+
             <div className="space-y-4">
               <div>
                 <label className="block text-xs font-bold text-[#08525a] mb-1">{tq.fields.phone}</label>
@@ -698,18 +765,18 @@ export default function ClientQuestionnaireHomePage() {
                   required
                   value={q.contacts.phone}
                   onChange={(e) => {
-                    const p = e.target.value;
+                    const formatted = formatPhoneNumber(e.target.value);
                     setQ({
                       ...q,
                       contacts: {
                         ...q.contacts,
-                        phone: p,
-                        whatsapp: whatsappSame ? p : q.contacts.whatsapp
+                        phone: formatted,
+                        whatsapp: whatsappSame ? formatted : q.contacts.whatsapp
                       }
                     });
                   }}
-                  placeholder="+7 (999) 000-00-00"
-                  className="w-full p-3 bg-[#FDF2F0]/50 border border-[#0E7C86]/20 rounded-xl text-sm font-semibold"
+                  placeholder="+7 (999) 000-00-00 / +992 (92) 123-45-67"
+                  className="w-full p-3 bg-[#FDF2F0]/50 border border-[#0E7C86]/20 rounded-xl text-sm font-semibold font-mono"
                 />
               </div>
 
@@ -734,9 +801,12 @@ export default function ClientQuestionnaireHomePage() {
                   <input
                     type="tel"
                     value={q.contacts.whatsapp || ""}
-                    onChange={(e) => setQ({ ...q, contacts: { ...q.contacts, whatsapp: e.target.value } })}
-                    placeholder="+7 (999) 000-00-00"
-                    className="w-full p-3 bg-[#FDF2F0]/50 border border-[#0E7C86]/20 rounded-xl text-sm font-semibold"
+                    onChange={(e) => {
+                      const formatted = formatPhoneNumber(e.target.value);
+                      setQ({ ...q, contacts: { ...q.contacts, whatsapp: formatted } });
+                    }}
+                    placeholder="+7 (999) 000-00-00 / +992 (92) 123-45-67"
+                    className="w-full p-3 bg-[#FDF2F0]/50 border border-[#0E7C86]/20 rounded-xl text-sm font-semibold font-mono"
                   />
                 </div>
               )}
@@ -945,15 +1015,27 @@ export default function ClientQuestionnaireHomePage() {
             ) : (
               <div className="space-y-4">
                 {q.children.map((child, idx) => {
-                  const age = child.birth_date ? Math.floor((Date.now() - new Date(child.birth_date).getTime()) / (365.25 * 24 * 3600 * 1000)) : 0;
-                  const is14Plus = age >= 14;
+                  const cAge = calculateAge(child.birth_date, language);
+                  const is14Plus = cAge && cAge.age >= 14;
 
                   return (
                     <div key={child.id} className="p-5 bg-white rounded-2xl border border-[#0E7C86]/20 shadow-sm space-y-4">
                       <div className="flex justify-between items-center border-b border-[#0E7C86]/10 pb-2">
-                        <span className="font-bold text-xs text-[#0E7C86]">
-                          {language === "tg" ? `Кӯдак #${idx + 1}` : `Ребёнок #${idx + 1}`} {is14Plus && (language === "tg" ? "(14+ сола — шиноснома лозим)" : "(14+ лет — требуется паспорт)")}
-                        </span>
+                        <div className="flex items-center space-x-2">
+                          <span className="font-bold text-xs text-[#0E7C86]">
+                            {language === "tg" ? `Кӯдак #${idx + 1}` : `Ребёнок #${idx + 1}`}
+                          </span>
+                          {cAge && (
+                            <span className="text-[11px] font-extrabold bg-[#0E7C86]/10 text-[#0E7C86] px-2 py-0.5 rounded-full">
+                              {cAge.text}
+                            </span>
+                          )}
+                          {is14Plus && (
+                            <span className="text-[10px] font-extrabold bg-[#FFD9A0] text-[#08525a] px-2 py-0.5 rounded-full">
+                              {language === "tg" ? "Шиноснома лозим (14+)" : "Требуется паспорт (14+)"}
+                            </span>
+                          )}
+                        </div>
                         <button
                           type="button"
                           onClick={() => removeChild(child.id)}
@@ -994,17 +1076,19 @@ export default function ClientQuestionnaireHomePage() {
                           <div className="grid grid-cols-2 gap-2">
                             <input
                               type="text"
-                              placeholder={tq.fields.series}
+                              maxLength={5}
+                              placeholder="Серия (напр. 45 10)"
                               value={child.passport_series || ""}
-                              onChange={(e) => updateChild(child.id, 'passport_series', e.target.value)}
-                              className="p-2 bg-white border border-[#0E7C86]/20 rounded-lg text-xs"
+                              onChange={(e) => updateChild(child.id, 'passport_series', formatPassportSeries(e.target.value))}
+                              className="p-2 bg-white border border-[#0E7C86]/20 rounded-lg text-xs font-mono"
                             />
                             <input
                               type="text"
-                              placeholder={tq.fields.number}
+                              maxLength={6}
+                              placeholder="Номер (напр. 123456)"
                               value={child.passport_number || ""}
-                              onChange={(e) => updateChild(child.id, 'passport_number', e.target.value)}
-                              className="p-2 bg-white border border-[#0E7C86]/20 rounded-lg text-xs"
+                              onChange={(e) => updateChild(child.id, 'passport_number', formatPassportNumber(e.target.value))}
+                              className="p-2 bg-white border border-[#0E7C86]/20 rounded-lg text-xs font-mono"
                             />
                           </div>
                         </div>
@@ -1019,44 +1103,83 @@ export default function ClientQuestionnaireHomePage() {
 
         {step === 10 && (
           <div className="space-y-6">
-            <div className="flex justify-between items-center">
-              <div className="flex items-center space-x-2 text-[#08525a]">
-                <FolderPlus className="w-5 h-5 text-[#2AA9A9]" />
-                <h2 className="text-xl font-extrabold">{tq.fields.documents} ({q.documents.length})</h2>
+            <div className="flex items-center space-x-2 text-[#08525a]">
+              <FolderPlus className="w-5 h-5 text-[#2AA9A9]" />
+              <h2 className="text-xl font-extrabold">{tq.fields.documents} ({q.documents.length})</h2>
+            </div>
+
+            {/* DIRECT PHOTO / SCAN CAMERA UPLOADER */}
+            <div className="p-5 bg-[#FDF2F0]/70 rounded-2xl border border-[#0E7C86]/20 space-y-4">
+              <div className="flex items-center space-x-2">
+                <Camera className="w-5 h-5 text-[#FF8C42]" />
+                <h3 className="font-bold text-xs sm:text-sm text-[#08525a]">
+                  {language === "tg" ? "Замима кардани акси ҳуҷҷат аз камера ё телефон" : "Прикрепить скан / фото документа с камеры"}
+                </h3>
               </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <input
+                  type="text"
+                  placeholder={language === "tg" ? "Намуди ҳуҷҷат (масалан: Шиноснома, ВНЖ, РВП)..." : "Тип документа (напр.: Паспорт, ВНЖ, РВП)..."}
+                  value={newDocType}
+                  onChange={(e) => setNewDocType(e.target.value)}
+                  className="p-3 bg-white border border-[#0E7C86]/20 rounded-xl text-xs font-semibold outline-none"
+                />
+                <input
+                  type="text"
+                  placeholder={language === "tg" ? "Рақами ҳуҷҷат (ихтиёрӣ)" : "Номер документа (опционально)"}
+                  value={newDocNumber}
+                  onChange={(e) => setNewDocNumber(e.target.value)}
+                  className="p-3 bg-white border border-[#0E7C86]/20 rounded-xl text-xs font-semibold outline-none"
+                />
+              </div>
+
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*,.pdf"
+                capture="environment"
+                onChange={handleFileUpload}
+                className="hidden"
+              />
+
               <button
                 type="button"
-                onClick={addDoc}
-                className="px-4 py-2 bg-[#0E7C86] hover:bg-[#08525a] text-white font-bold text-xs rounded-xl transition shadow-sm"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isUploading}
+                className="w-full py-3.5 bg-[#0E7C86] hover:bg-[#08525a] text-white font-bold text-xs rounded-xl transition flex items-center justify-center space-x-2 shadow-sm disabled:opacity-50"
               >
-                {tq.fields.addDoc}
+                {isUploading ? (
+                  <span>{language === "tg" ? "Боркунӣ..." : "Загрузка файла..."}</span>
+                ) : (
+                  <>
+                    <Camera className="w-4 h-4 text-[#FFD9A0]" />
+                    <span>{language === "tg" ? "Гирифтани акс ё интихоби файл" : "Сделать фото с камеры или выбрать файл"}</span>
+                  </>
+                )}
               </button>
             </div>
 
+            {/* ATTACHED DOCUMENTS LIST */}
             {q.documents.length === 0 ? (
-              <div className="p-6 bg-[#FDF2F0] rounded-2xl text-center text-xs font-semibold text-[#08525a]/70">
+              <div className="p-6 bg-white rounded-2xl text-center text-xs font-semibold text-[#08525a]/70 border border-[#0E7C86]/10">
                 {language === "tg"
-                  ? "Ҳуҷҷатҳои иловагӣ илова нашудаанд. Дар сурати доштан, шаҳодатномаҳо, ВНЖ, РВП ва ғайраро илова кунед."
-                  : "Дополнительные документы не добавлены. При необходимости укажите имеющиеся свидетельства, ВНЖ, РВП и др."}
+                  ? "Ҳуҷҷатҳои иловагӣ илова нашудаанд. Агар дошта бошед, тугмаи болоро барои аксбардорӣ пахш намоед."
+                  : "Дополнительные документы не добавлены. При необходимости прикрепите фото или укажите реквизиты."}
               </div>
             ) : (
               <div className="space-y-3">
                 {q.documents.map((doc) => (
-                  <div key={doc.id} className="p-4 bg-white rounded-2xl border border-[#0E7C86]/20 flex items-center justify-between gap-3">
-                    <input
-                      type="text"
-                      placeholder={tq.fields.docType}
-                      value={doc.document_type}
-                      onChange={(e) => updateDoc(doc.id, 'document_type', e.target.value)}
-                      className="p-2 bg-[#FDF2F0]/50 border border-[#0E7C86]/20 rounded-xl text-xs font-semibold w-1/2"
-                    />
-                    <input
-                      type="text"
-                      placeholder={tq.fields.docNumber}
-                      value={doc.document_number || ""}
-                      onChange={(e) => updateDoc(doc.id, 'document_number', e.target.value)}
-                      className="p-2 bg-[#FDF2F0]/50 border border-[#0E7C86]/20 rounded-xl text-xs font-semibold w-1/3"
-                    />
+                  <div key={doc.id} className="p-4 bg-white rounded-2xl border border-[#0E7C86]/20 flex items-center justify-between gap-3 shadow-sm">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 rounded-lg bg-[#FDF2F0] text-[#0E7C86] flex items-center justify-center font-bold text-xs">
+                        <FileText className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <span className="font-bold text-xs text-[#08525a] block">{doc.document_type}</span>
+                        <span className="text-[11px] text-gray-500 font-mono">{doc.document_number || "—"}</span>
+                      </div>
+                    </div>
                     <button
                       type="button"
                       onClick={() => removeDoc(doc.id)}
@@ -1073,9 +1196,19 @@ export default function ClientQuestionnaireHomePage() {
 
         {step === 11 && (
           <div className="space-y-6">
-            <div className="flex items-center space-x-2 text-[#08525a]">
-              <CheckSquare className="w-5 h-5 text-[#2AA9A9]" />
-              <h2 className="text-xl font-extrabold">{tq.steps[11].title}</h2>
+            <div className="flex justify-between items-center">
+              <div className="flex items-center space-x-2 text-[#08525a]">
+                <CheckSquare className="w-5 h-5 text-[#2AA9A9]" />
+                <h2 className="text-xl font-extrabold">{tq.steps[11].title}</h2>
+              </div>
+              <button
+                type="button"
+                onClick={handlePrintPDF}
+                className="text-xs font-bold px-3 py-1.5 bg-[#0E7C86] text-white rounded-xl transition flex items-center space-x-1 shadow-sm"
+              >
+                <Printer className="w-3.5 h-3.5" />
+                <span>{language === "tg" ? "Чоп ба PDF" : "Печать / PDF"}</span>
+              </button>
             </div>
 
             <div className="space-y-4 text-xs">
@@ -1084,7 +1217,7 @@ export default function ClientQuestionnaireHomePage() {
                   <span>{language === "tg" ? "Маълумоти асосӣ:" : "Основные данные:"}</span>
                   <button onClick={() => setStep(1)} className="hover:underline">{language === "tg" ? "Иваз кардан" : "Изменить"}</button>
                 </div>
-                <p className="font-semibold">{q.profile.last_name} {q.profile.first_name} {q.profile.middle_name}, {language === "tg" ? "Таваллуд:" : "Родился:"} {q.profile.birth_date}</p>
+                <p className="font-semibold">{q.profile.last_name} {q.profile.first_name} {q.profile.middle_name}, {language === "tg" ? "Таваллуд:" : "Родился:"} {q.profile.birth_date} {clientAge && `(${clientAge.text})`}</p>
                 <p>{language === "tg" ? "Шаҳрвандӣ:" : "Гражданство:"} {q.profile.citizenship}</p>
               </div>
 
@@ -1094,6 +1227,15 @@ export default function ClientQuestionnaireHomePage() {
                   <button onClick={() => setStep(3)} className="hover:underline">{language === "tg" ? "Иваз кардан" : "Изменить"}</button>
                 </div>
                 <p>{language === "tg" ? "Шиноснома:" : "Паспорт:"} {q.internal_passport.series} {q.internal_passport.number}, ИНН: {q.tax.inn || "-"}, СНИЛС: {q.tax.snils || "-"}</p>
+              </div>
+
+              <div className="p-4 bg-[#FDF2F0] rounded-2xl border border-[#0E7C86]/10 space-y-2">
+                <div className="flex justify-between font-bold text-[#0E7C86]">
+                  <span>{language === "tg" ? "Тамос ва суроға:" : "Контакты и Адрес:"}</span>
+                  <button onClick={() => setStep(5)} className="hover:underline">{language === "tg" ? "Иваз кардан" : "Изменить"}</button>
+                </div>
+                <p>Тел: {q.contacts.phone}, WhatsApp: {q.contacts.whatsapp || q.contacts.phone}</p>
+                <p>Суроға: {q.registration_address.city}, {q.registration_address.street} {q.registration_address.house}</p>
               </div>
             </div>
           </div>
