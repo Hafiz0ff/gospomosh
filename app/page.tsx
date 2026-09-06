@@ -395,9 +395,9 @@ export default function ClientQuestionnaireHomePage() {
 
   // MAIN QUESTIONNAIRE VIEW
   return (
-    <div className="max-w-4xl mx-auto py-4 sm:py-6 space-y-6 text-[#08525a]">
+    <div className="max-w-4xl mx-auto pt-1 pb-6 space-y-3 text-[#08525a]">
       {/* Top action bar */}
-      <div className="flex items-center justify-between border-b border-[#0E7C86]/10 pb-3 print:hidden">
+      <div className="flex items-center justify-between border-b border-[#0E7C86]/10 pb-2.5 print:hidden">
         <div className="flex items-center space-x-2">
           <Sparkles className="w-4 h-4 text-[#FF8C42]" />
           <span className="text-xs font-extrabold uppercase tracking-wider text-[#0E7C86]">
@@ -424,15 +424,14 @@ export default function ClientQuestionnaireHomePage() {
       </div>
 
       {/* DOCUMENT ACCURACY DISCLAIMER */}
-      <div className="bg-[#FFD9A0]/25 border border-[#FF8C42]/30 rounded-2xl p-3.5 sm:p-4 text-xs text-[#08525a] flex items-start space-x-2.5 shadow-sm print:hidden">
-        <AlertCircle className="w-4 h-4 text-[#FF8C42] flex-shrink-0 mt-0.5" />
-        <p className="leading-relaxed font-semibold">
+      <div className="bg-[#FFD9A0]/25 border border-[#FF8C42]/30 rounded-xl py-2 px-3 sm:px-3.5 text-[11.5px] sm:text-xs text-[#08525a] flex items-center space-x-2 shadow-sm print:hidden">
+        <p className="leading-snug font-medium">
           {tq.docDisclaimer}
         </p>
       </div>
 
-      {/* 4 INTERACTIVE SECTION TABS (VARIANT 1 + 2 COMBINED) */}
-      <div className="bg-white rounded-3xl border border-[#0E7C86]/10 p-3 sm:p-4 shadow-sm space-y-3 print:hidden">
+      {/* 4 INTERACTIVE SECTION TABS */}
+      <div className="bg-white rounded-2xl border border-[#0E7C86]/10 p-2.5 sm:p-3 shadow-sm space-y-2.5 print:hidden">
         {/* Section Tabs */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
           {[
@@ -453,7 +452,7 @@ export default function ClientQuestionnaireHomePage() {
                   setStep(sec.firstStep);
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
-                className={`p-3 rounded-2xl text-left transition flex items-center space-x-3 border ${
+                className={`p-2 sm:p-2.5 rounded-xl text-left transition flex items-center space-x-2.5 border ${
                   isActive
                     ? "bg-[#0E7C86] text-white border-[#0E7C86] shadow-md shadow-[#0E7C86]/20"
                     : isPassed
@@ -461,18 +460,18 @@ export default function ClientQuestionnaireHomePage() {
                     : "bg-white text-gray-400 border-gray-100 hover:border-gray-200"
                 }`}
               >
-                <div className={`w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-xs ${
+                <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 font-bold text-xs ${
                   isActive
                     ? "bg-white/20 text-white"
                     : isPassed
                     ? "bg-[#0E7C86] text-white"
                     : "bg-gray-100 text-gray-400"
                 }`}>
-                  {isPassed ? <CheckCircle className="w-4 h-4" /> : <IconComponent className="w-4 h-4" />}
+                  {isPassed ? <CheckCircle className="w-3.5 h-3.5" /> : <IconComponent className="w-3.5 h-3.5" />}
                 </div>
 
                 <div className="overflow-hidden">
-                  <span className={`text-[10px] font-extrabold uppercase block tracking-wider ${isActive ? "text-[#FFD9A0]" : "text-gray-400"}`}>
+                  <span className={`text-[9.5px] font-extrabold uppercase block tracking-wider ${isActive ? "text-[#FFD9A0]" : "text-gray-400"}`}>
                     {language === "tg" ? `Бахши ${sec.id}` : `Раздел ${sec.id}`}
                   </span>
                   <span className="font-extrabold text-xs truncate block leading-snug">
@@ -485,20 +484,20 @@ export default function ClientQuestionnaireHomePage() {
         </div>
 
         {/* Progress & Time Info Bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2 px-2 border-t border-[#0E7C86]/10 text-xs font-bold text-[#08525a]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2 px-1 border-t border-[#0E7C86]/10 text-xs font-bold text-[#08525a]">
           <div className="flex items-center space-x-2">
-            <span className="text-[#0E7C86] bg-[#FDF2F0] px-2.5 py-1 rounded-xl">
+            <span className="text-[#0E7C86] bg-[#FDF2F0] px-2.5 py-1 rounded-xl text-[11px] sm:text-xs">
               {step <= 2 ? (language === "tg" ? "Бахши 1 аз 4: Маълумоти шахсӣ" : "Раздел 1 из 4: Личные данные") :
                step <= 4 ? (language === "tg" ? "Бахши 2 аз 4: Шиноснома ва андоз" : "Раздел 2 из 4: Паспорт и налоги") :
                step <= 6 ? (language === "tg" ? "Бахши 3 аз 4: Тамос ва суроға" : "Раздел 3 из 4: Контакты и адрес") :
                (language === "tg" ? "Бахши 4 аз 4: Оила ва ҳуҷҷатҳо" : "Раздел 4 из 4: Семья и документы")}
             </span>
-            <span className="text-gray-400 font-normal">⏱️ {tq.estimatedTime}</span>
+            <span className="text-gray-400 font-normal text-[11px] sm:text-xs">⏱️ {tq.estimatedTime}</span>
           </div>
 
           <div className="flex items-center space-x-3">
             <span className="text-xs font-extrabold text-[#0E7C86]">{tq.passedPercent(progressPercent)}</span>
-            <div className="w-24 sm:w-32 bg-[#FDF2F0] h-2.5 rounded-full overflow-hidden">
+            <div className="w-24 sm:w-32 bg-[#FDF2F0] h-2 rounded-full overflow-hidden">
               <div
                 className="bg-[#0E7C86] h-full rounded-full transition-all duration-300 ease-out"
                 style={{ width: `${progressPercent}%` }}
@@ -509,7 +508,7 @@ export default function ClientQuestionnaireHomePage() {
       </div>
 
       {/* FORM CARD CONTAINER */}
-      <div className="bg-white rounded-3xl border border-[#0E7C86]/10 p-6 sm:p-8 shadow-sm space-y-6">
+      <div className="bg-white rounded-2xl border border-[#0E7C86]/10 p-4 sm:p-6 shadow-sm space-y-4">
 
         {/* STEP CONTENT */}
         {step === 1 && (
@@ -1349,7 +1348,7 @@ export default function ClientQuestionnaireHomePage() {
         )}
 
         {/* NAVIGATION BUTTONS */}
-        <div className="flex justify-between items-center pt-6 border-t border-[#0E7C86]/10 print:hidden">
+        <div className="flex justify-between items-center pt-4 border-t border-[#0E7C86]/10 print:hidden">
           <button
             type="button"
             onClick={handlePrev}
