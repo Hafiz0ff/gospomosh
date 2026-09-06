@@ -218,7 +218,7 @@ export interface FullClientQuestionnaire {
 export interface ClientData {
   id: string;
   created_at: string;
-  status: 'active' | 'archived';
+  status: 'new' | 'in_progress' | 'need_docs' | 'submitted' | 'completed' | 'active' | 'archived' | string;
   questionnaire: FullClientQuestionnaire;
   leads_count?: number;
 }

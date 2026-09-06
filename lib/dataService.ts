@@ -475,6 +475,41 @@ export async function saveQuestionnaire(q: FullClientQuestionnaire): Promise<{ i
   return { id: qId, client_id: clientId };
 }
 
+
+export async function updateClientStatus(clientId: string, status: string): Promise<boolean> {
+  try {
+    const { error } = await supabase.from('clients').update({ status }).eq('id', clientId);
+    if (!error) {
+      const c = memoryClients.find((item) => item.id === clientId);
+      if (c) c.status = status as any;
+      return true;
+    }
+  } catch {}
+  const c = memoryClients.find((item) => item.id === clientId);
+  if (c) {
+    c.status = status as any;
+    return true;
+  }
+  return false;
+}
+
+export async function updateClientQuestionnaire(clientId: string, updatedQ: FullClientQuestionnaire): Promise<boolean> {
+  const clientIdx = memoryClients.findIndex((item) => item.id === clientId);
+  if (clientIdx >= 0) {
+    memoryClients[clientIdx].questionnaire = {
+      ...updatedQ,
+      updated_at: new Date().toISOString()
+    };
+  }
+  try {
+    await supabase.from('questionnaires').update({
+      marital_status: updatedQ.marital_status,
+      updated_at: new Date().toISOString()
+    }).eq('client_id', clientId);
+  } catch {}
+  return true;
+}
+
 export async function deleteClient(id: string): Promise<boolean> {
   try {
     await supabase.from('clients').delete().eq('id', id);
