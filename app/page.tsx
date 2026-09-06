@@ -431,18 +431,85 @@ export default function ClientQuestionnaireHomePage() {
         </p>
       </div>
 
-      {/* STEPPER PROGESS */}
+      {/* 4 INTERACTIVE SECTION TABS (VARIANT 1 + 2 COMBINED) */}
+      <div className="bg-white rounded-3xl border border-[#0E7C86]/10 p-3 sm:p-4 shadow-sm space-y-3 print:hidden">
+        {/* Section Tabs */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+          {[
+            { id: 1, firstStep: 1, title: tq.sections[1].title, sub: tq.sections[1].subtitle, icon: User, steps: [1, 2] },
+            { id: 2, firstStep: 3, title: tq.sections[2].title, sub: tq.sections[2].subtitle, icon: FileText, steps: [3, 4] },
+            { id: 3, firstStep: 5, title: tq.sections[3].title, sub: tq.sections[3].subtitle, icon: PhoneCall, steps: [5, 6] },
+            { id: 4, firstStep: 7, title: tq.sections[4].title, sub: tq.sections[4].subtitle, icon: Heart, steps: [7, 8, 9, 10, 11, 12] }
+          ].map((sec) => {
+            const IconComponent = sec.icon;
+            const isActive = sec.steps.includes(step);
+            const isPassed = Math.max(...sec.steps) < step;
+
+            return (
+              <button
+                key={sec.id}
+                type="button"
+                onClick={() => {
+                  setStep(sec.firstStep);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className={`p-3 rounded-2xl text-left transition flex items-center space-x-3 border ${
+                  isActive
+                    ? "bg-[#0E7C86] text-white border-[#0E7C86] shadow-md shadow-[#0E7C86]/20"
+                    : isPassed
+                    ? "bg-[#FDF2F0] text-[#08525a] border-[#0E7C86]/20 hover:border-[#0E7C86]"
+                    : "bg-white text-gray-400 border-gray-100 hover:border-gray-200"
+                }`}
+              >
+                <div className={`w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-xs ${
+                  isActive
+                    ? "bg-white/20 text-white"
+                    : isPassed
+                    ? "bg-[#0E7C86] text-white"
+                    : "bg-gray-100 text-gray-400"
+                }`}>
+                  {isPassed ? <CheckCircle className="w-4 h-4" /> : <IconComponent className="w-4 h-4" />}
+                </div>
+
+                <div className="overflow-hidden">
+                  <span className={`text-[10px] font-extrabold uppercase block tracking-wider ${isActive ? "text-[#FFD9A0]" : "text-gray-400"}`}>
+                    {language === "tg" ? `Бахши ${sec.id}` : `Раздел ${sec.id}`}
+                  </span>
+                  <span className="font-extrabold text-xs truncate block leading-snug">
+                    {sec.title}
+                  </span>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Progress & Time Info Bar */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2 px-2 border-t border-[#0E7C86]/10 text-xs font-bold text-[#08525a]">
+          <div className="flex items-center space-x-2">
+            <span className="text-[#0E7C86] bg-[#FDF2F0] px-2.5 py-1 rounded-xl">
+              {step <= 2 ? (language === "tg" ? "Бахши 1 аз 4: Маълумоти шахсӣ" : "Раздел 1 из 4: Личные данные") :
+               step <= 4 ? (language === "tg" ? "Бахши 2 аз 4: Шиноснома ва андоз" : "Раздел 2 из 4: Паспорт и налоги") :
+               step <= 6 ? (language === "tg" ? "Бахши 3 аз 4: Тамос ва суроға" : "Раздел 3 из 4: Контакты и адрес") :
+               (language === "tg" ? "Бахши 4 аз 4: Оила ва ҳуҷҷатҳо" : "Раздел 4 из 4: Семья и документы")}
+            </span>
+            <span className="text-gray-400 font-normal">⏱️ {tq.estimatedTime}</span>
+          </div>
+
+          <div className="flex items-center space-x-3">
+            <span className="text-xs font-extrabold text-[#0E7C86]">{tq.passedPercent(progressPercent)}</span>
+            <div className="w-24 sm:w-32 bg-[#FDF2F0] h-2.5 rounded-full overflow-hidden">
+              <div
+                className="bg-[#0E7C86] h-full rounded-full transition-all duration-300 ease-out"
+                style={{ width: `${progressPercent}%` }}
+              ></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* FORM CARD CONTAINER */}
       <div className="bg-white rounded-3xl border border-[#0E7C86]/10 p-6 sm:p-8 shadow-sm space-y-6">
-        <div className="flex justify-between items-center text-xs font-bold text-[#08525a] print:hidden">
-          <span>{tq.stepOf(step, 12)}</span>
-          <span>{tq.passedPercent(progressPercent)}</span>
-        </div>
-        <div className="w-full bg-[#FDF2F0] h-3 rounded-full overflow-hidden print:hidden">
-          <div
-            className="bg-[#0E7C86] h-full rounded-full transition-all duration-300 ease-out"
-            style={{ width: `${progressPercent}%` }}
-          ></div>
-        </div>
 
         {/* STEP CONTENT */}
         {step === 1 && (
