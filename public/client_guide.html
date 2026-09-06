@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Руководство пользователя: Сервис «ГосПомощь» & CRM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0E7C86;
+      --primary-dark: #08525A;
+      --accent: #FF8C42;
+      --accent-light: #FFF4EC;
+      --bg: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --text: #0F172A;
+      --text-muted: #64748B;
+      --border: #E2E8F0;
+      --success: #10B981;
+      --success-light: #ECFDF5;
+      --warning: #F59E0B;
+      --info: #0284C7;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+      font-size: 14px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* Print Controls Bar */
+    .no-print-bar {
+      position: sticky;
+      top: 16px;
+      z-index: 100;
+      background: rgba(8, 82, 90, 0.92);
+      backdrop-filter: blur(12px);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 25px -5px rgba(8, 82, 90, 0.3);
+    }
+
+    .print-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .print-btn:hover {
+      background: #E66E26;
+      transform: translateY(-1px);
+    }
+
+    /* Header Banner */
+    .header-card {
+      background: linear-gradient(135deg, #08525A 0%, #0E7C86 100%);
+      color: white;
+      padding: 36px 32px;
+      border-radius: 24px;
+      box-shadow: 0 12px 30px rgba(14, 124, 134, 0.2);
+      margin-bottom: 30px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header-card::after {
+      content: "ГП";
+      position: absolute;
+      right: 20px;
+      bottom: -30px;
+      font-size: 160px;
+      font-weight: 900;
+      color: rgba(255, 255, 255, 0.06);
+      pointer-events-none;
+    }
+
+    .brand-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 6px 14px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+    }
+
+    .brand-badge span.dot {
+      width: 8px;
+      height: 8px;
+      background: #4ADE80;
+      border-radius: 50%;
+    }
+
+    .header-title {
+      font-size: 26px;
+      font-weight: 900;
+      line-height: 1.25;
+      margin-bottom: 10px;
+    }
+
+    .header-subtitle {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.85);
+      max-width: 650px;
+    }
+
+    /* Quick Access Box */
+    .access-box {
+      background: #FFFFFF;
+      border: 2px solid #E0F2F1;
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 35px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    }
+
+    .access-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .access-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    .access-item {
+      background: #F8FAFC;
+      border: 1px solid var(--border);
+      padding: 14px 18px;
+      border-radius: 14px;
+    }
+
+    .access-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .access-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--primary-dark);
+      word-break: break-all;
+    }
+
+    .access-value a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .access-value a:hover {
+      text-decoration: underline;
+    }
+
+    /* Steps & Sections */
+    .section-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+      page-break-inside: avoid;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #F1F5F9;
+      padding-bottom: 16px;
+    }
+
+    .step-number {
+      width: 36px;
+      height: 36px;
+      background: var(--primary);
+      color: white;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--primary-dark);
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .feature-box {
+      background: #F8FAFC;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+    }
+
+    .feature-box.highlight {
+      background: var(--accent-light);
+      border-color: #FFD3B5;
+    }
+
+    .feature-box h4 {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    .feature-box p {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Badges & Tags */
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .badge-blue { background: #E0F2FE; color: #0369A1; }
+    .badge-green { background: #DCFCE7; color: #15803D; }
+    .badge-amber { background: #FEF3C7; color: #B45309; }
+    .badge-purple { background: #F3E8FF; color: #7E22CE; }
+
+    /* Tips & Callouts */
+    .callout {
+      background: #EFF6FF;
+      border-left: 4px solid var(--info);
+      padding: 14px 18px;
+      border-radius: 0 12px 12px 0;
+      margin: 18px 0;
+      font-size: 12.5px;
+      color: #1E3A8A;
+    }
+
+    .callout strong {
+      display: block;
+      margin-bottom: 4px;
+      color: #1E40AF;
+    }
+
+    .callout.success {
+      background: var(--success-light);
+      border-left-color: var(--success);
+      color: #065F46;
+    }
+
+    .callout.success strong {
+      color: #047857;
+    }
+
+    /* Workflow Diagram */
+    .workflow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin: 16px 0;
+      padding: 12px;
+      background: #F1F5F9;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .workflow-item {
+      background: white;
+      padding: 6px 12px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      color: var(--primary-dark);
+    }
+
+    .workflow-arrow {
+      color: #94A3B8;
+      font-size: 14px;
+    }
+
+    /* Footer */
+    .doc-footer {
+      text-align: center;
+      padding-top: 30px;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    @media print {
+      body {
+        background: white;
+        font-size: 12px;
+      }
+      .container {
+        max-width: 100%;
+        padding: 0;
+      }
+      .no-print-bar {
+        display: none !important;
+      }
+      .header-card {
+        padding: 24px;
+        box-shadow: none;
+        border: 1px solid #0E7C86;
+      }
+      .section-card {
+        box-shadow: none;
+        border: 1px solid #CBD5E1;
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+      @page {
+        margin: 12mm 15mm;
+        size: A4;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Floating Print Bar -->
+  <div class="no-print-bar">
+    <div>
+      <span style="font-weight: 800; font-size: 14px;">📄 Инструкция для заказчика: Платформа «ГосПомощь»</span>
+      <span style="font-size: 12px; opacity: 0.8; margin-left: 10px;">(Готова к печати или сохранению в PDF)</span>
+    </div>
+    <button class="print-btn" onclick="window.print()">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6v-8z"/></svg>
+      Сохранить в PDF / Распечатать
+    </button>
+  </div>
+
+  <!-- Header Banner -->
+  <div class="header-card">
+    <div class="brand-badge">
+      <span class="dot"></span>
+      Платформа 2026 • Инструкция пользователя
+    </div>
+    <h1 class="header-title">Руководство по первому использованию сервиса «ГосПомощь»</h1>
+    <p class="header-subtitle">
+      Наглядный гид по заполнению клиентской анкеты, работе в CRM-системе менеджера, выгрузке в Excel и прямой связи через WhatsApp.
+    </p>
+  </div>
+
+  <!-- Credentials Box -->
+  <div class="access-box">
+    <div class="access-title">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+      Быстрый доступ к демонстрационному стенду
+    </div>
+    <div class="access-grid">
+      <div class="access-item">
+        <div class="access-label">Ссылка на сервис</div>
+        <div class="access-value">
+          <a href="https://gosuslugi-olive.vercel.app" target="_blank">gosuslugi-olive.vercel.app</a>
+        </div>
+      </div>
+      <div class="access-item">
+        <div class="access-label">Вход в CRM (Логин)</div>
+        <div class="access-value">admin@gospomosh.ru</div>
+      </div>
+      <div class="access-item">
+        <div class="access-label">Пароль администратора</div>
+        <div class="access-value">AdminPassword2026!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 1 -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="step-number">1</div>
+      <div>
+        <h2 class="section-title">Главный экран: Единая анкета клиента</h2>
+        <span style="font-size: 12px; color: var(--text-muted);">Клиент открывает сайт и сразу попадает на форму заполнения</span>
+      </div>
+    </div>
+
+    <p style="margin-bottom: 14px;">
+      Главная страница сайта настроена так, чтобы клиент (или менеджер, принимающий данные по телефону) не отвлекался на лишние разделы и сразу приступал к заполнению. Форма разделена на <strong>4 последовательных интерактивных этапа</strong>:
+    </p>
+
+    <div class="feature-grid">
+      <div class="feature-box">
+        <h4>1. Личные данные & Паспорт</h4>
+        <p>• ФИО и дата рождения с <strong>автоматическим расчетом возраста</strong> (например: <em>«Возраст: 28 лет»</em>).<br>
+        • Серия и номер паспорта с автоформатированием пробела.<br>
+        • Орган выдачи и код подразделения.</p>
+      </div>
+      <div class="feature-box">
+        <h4>2. ИНН, СНИЛС & Контакты</h4>
+        <p>• <strong>Умные маски ввода:</strong> ИНН (12 цифр) и СНИЛС (11 цифр).<br>
+        • Переключатель телефонного кода: <strong>🇷🇺 РФ (+7)</strong> или <strong>🇹🇯 Таджикистан (+992)</strong> с флагом.<br>
+        • Поле для WhatsApp и Email.</p>
+      </div>
+      <div class="feature-box">
+        <h4>3. Семья & Адрес</h4>
+        <p>• Семейное положение: Холост, В браке, В разводе.<br>
+        • Автоматическое появление полей супруга(и) при выборе брака.<br>
+        • Добавление любого количества детей с датами рождения.<br>
+        • Точный адрес регистрации.</p>
+      </div>
+      <div class="feature-box highlight">
+        <h4>4. Фото документов & Скачивание</h4>
+        <p>• <strong>Загрузка с камеры телефона:</strong> клиент может прямо с мобильного сфотографировать разворот паспорта или выбрать скан из галереи.<br>
+        • <strong>Кнопка «Скачать черновик PDF»:</strong> мгновенно генерирует красивый бланк с внесенными данными.</p>
+      </div>
+    </div>
+
+    <div class="callout success">
+      <strong>💡 Черновик никогда не теряется!</strong>
+      Форма автоматически сохраняет каждый введенный символ в память браузера. Даже если клиент случайно закроет вкладку или сядет телефон, при повторном открытии все данные восстановятся.
+    </div>
+  </div>
+
+  <!-- Step 2 -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="step-number">2</div>
+      <div>
+        <h2 class="section-title">Вход в панель менеджера (CRM)</h2>
+        <span style="font-size: 12px; color: var(--text-muted);">Рабочее место сотрудника для обработки поступивших анкет</span>
+      </div>
+    </div>
+
+    <p style="margin-bottom: 14px;">
+      Для перехода в закрытую часть системы выполните следующие шаги:
+    </p>
+
+    <ol style="margin-left: 20px; line-height: 1.8; margin-bottom: 16px;">
+      <li>В правом верхнем углу сайта нажмите на <strong>иконку щита</strong> (<code>/admin</code>).</li>
+      <li>Откроется страница авторизации. Введите Email: <code>admin@gospomosh.ru</code> и Пароль: <code>AdminPassword2026!</code>.</li>
+      <li>Нажмите кнопку <strong>«Войти в систему»</strong>. Система перенаправит вас в реестр клиентов.</li>
+    </ol>
+
+    <div class="callout">
+      <strong>🔒 Режим защиты персональных данных (Маскирование PII):</strong>
+      В правом верхнем углу CRM есть кнопка <strong>«Маскировать PII» / «Показать данные»</strong>. Если менеджер работает в публичном месте или показывает экран клиенту, паспортные данные, ИНН и СНИЛС автоматически скрываются звездочками (<code>77********12</code>).
+    </div>
+  </div>
+
+  <!-- Step 3 -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="step-number">3</div>
+      <div>
+        <h2 class="section-title">Работа с базой клиентов и 7 новых функций</h2>
+        <span style="font-size: 12px; color: var(--text-muted);">Все инструменты автоматизации в единой таблице</span>
+      </div>
+    </div>
+
+    <div class="feature-grid">
+      <div class="feature-box">
+        <h4>💬 1. Чат WhatsApp в 1 клик</h4>
+        <p>В строке каждого клиента есть зеленая кнопка <strong>«WhatsApp»</strong>. По клику открывается официальный чат WhatsApp с уже подготовленным вежливым приветствием от лица менеджера «ГосПомощь».</p>
+      </div>
+
+      <div class="feature-box">
+        <h4>🖨️ 2. Печать PDF-досье из списка</h4>
+        <p>Кнопка <strong>«Печать PDF»</strong> (иконка принтера) прямо в таблице сразу открывает официальное печатное досье клиента с гербовой шапкой в новой вкладке и запускает диалог печати.</p>
+      </div>
+
+      <div class="feature-box">
+        <h4>⚡ 3. Быстрое копирование (Copy)</h4>
+        <p>Рядом с ФИО, ИНН, СНИЛС, паспортом и телефоном есть иконки копирования. Клик — и чистые цифры уже в буфере обмена (удобно вставлять на сайтах МВД, ФНС или Госуслуг).</p>
+      </div>
+
+      <div class="feature-box">
+        <h4>🎯 4. Воронка и статусы</h4>
+        <p>Интерактивные статусы: 
+          <span class="badge badge-blue">Новая</span>
+          <span class="badge badge-amber">В обработке</span>
+          <span class="badge badge-purple">Ждем документы</span>
+          <span class="badge badge-green">Готово</span>. Смена статуса в выпадающем бейдже в 1 клик без перезагрузки страницы.</p>
+      </div>
+
+      <div class="feature-box">
+        <h4>✏️ 5. Редактирование менеджером</h4>
+        <p>В карточке клиента нажмите <strong>«Редактировать анкету»</strong>: менеджер может исправить опечатки в фамилии, дописать номер паспорта, дату выдачи или телефон и нажать <strong>«Сохранить»</strong>.</p>
+      </div>
+
+      <div class="feature-box">
+        <h4>🔍 6. Просмотр сканов с зумом</h4>
+        <p>Во вкладке «Документы & Сканы» можно открыть любое фото: приблизить (+), отдалить (-), или повернуть на 90° по часовой стрелке, если клиент прислал фото боком.</p>
+      </div>
+
+      <div class="feature-box highlight" style="grid-column: 1 / -1;">
+        <h4>📊 7. Профессиональный экспорт в Excel (.xlsx)</h4>
+        <p>Зеленая кнопка <strong>«Экспорт в Excel (.xlsx)»</strong> над таблицей формирует чистый структурированный файл со всеми отфильтрованными клиентами, русскими названиями колонок, паспортами, адресами и телефонами.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 4 -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="step-number">4</div>
+      <div>
+        <h2 class="section-title">Сценарий сквозного тестирования (Как попробовать самому)</h2>
+        <span style="font-size: 12px; color: var(--text-muted);">Простой тест за 3 минуты для проверки работы системы</span>
+      </div>
+    </div>
+
+    <div class="workflow">
+      <div class="workflow-item">1. Заполнить анкету на главной</div>
+      <div class="workflow-arrow">➔</div>
+      <div class="workflow-item">2. Войти в CRM (/admin)</div>
+      <div class="workflow-arrow">➔</div>
+      <div class="workflow-item">3. Найти клиента в списке</div>
+      <div class="workflow-arrow">➔</div>
+      <div class="workflow-item">4. Кликнуть WhatsApp / Печать</div>
+      <div class="workflow-arrow">➔</div>
+      <div class="workflow-item">5. Скачать реестр в Excel</div>
+    </div>
+
+    <ul style="margin-left: 20px; line-height: 1.8; font-size: 13px;">
+      <li><strong>Шаг А:</strong> Откройте сайт <a href="https://gosuslugi-olive.vercel.app" target="_blank">gosuslugi-olive.vercel.app</a> и заполните тестовую анкету (например: <em>«Алиев Рустам, +7 999 123-45-67»</em>). Прикрепите любое фото и нажмите «Отправить».</li>
+      <li><strong>Шаг Б:</strong> Нажмите на иконку щита вверху справа, авторизуйтесь под <code>admin@gospomosh.ru</code>.</li>
+      <li><strong>Шаг В:</strong> Убедитесь, что новая анкета моментально появилась в начале таблицы со статусом <span class="badge badge-blue">Новая</span>.</li>
+      <li><strong>Шаг Г:</strong> Нажмите зеленую кнопку <strong>«WhatsApp»</strong> — откроется диалог с клиентом. Нажмите кнопку принтера — откроется печатное досье. Нажмите <strong>«Экспорт в Excel»</strong> — скачается таблица.</li>
+    </ul>
+  </div>
+
+  <!-- Footer -->
+  <div class="doc-footer">
+    <p><strong>ГосПомощь © 2026</strong> • Все права защищены • Официальная CRM-система сервиса</p>
+    <p style="margin-top: 4px; font-size: 11px;">Документ сформирован автоматически для передачи руководству и сотрудникам</p>
+  </div>
+
+</div>
+
+</body>
+</html>
