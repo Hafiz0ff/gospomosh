@@ -521,13 +521,13 @@ export default function AdminPage() {
           <div className="overflow-x-auto rounded-2xl border border-slate-100">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="bg-[#FDF2F0]/60 border-b border-[#0E7C86]/10 text-[#08525a]/70 uppercase font-extrabold tracking-wider text-[11px]">
-                  <th className="py-3.5 px-4">Клиент</th>
-                  <th className="py-3.5 px-3">Статус анкеты</th>
-                  <th className="py-3.5 px-3">ИНН / СНИЛС</th>
-                  <th className="py-3.5 px-3">Паспорт</th>
-                  <th className="py-3.5 px-3">Телефон & WhatsApp</th>
-                  <th className="py-3.5 px-4 text-right">Действия</th>
+                <tr className="bg-[#FDF2F0]/60 border-b border-[#0E7C86]/10 text-[#08525a]/70 uppercase font-extrabold tracking-wider text-[11px] whitespace-nowrap">
+                  <th className="py-3 px-4">Клиент</th>
+                  <th className="py-3 px-3 w-[150px]">Статус анкеты</th>
+                  <th className="py-3 px-3">ИНН / СНИЛС</th>
+                  <th className="py-3 px-3">Паспорт</th>
+                  <th className="py-3 px-3">Телефон & WhatsApp</th>
+                  <th className="py-3 px-4 text-right">Действия</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -552,8 +552,8 @@ export default function AdminPage() {
                     return (
                       <tr key={c.id} className="hover:bg-[#FDF2F0]/30 transition group">
                         {/* Client Full Info */}
-                        <td className="py-3.5 px-4">
-                          <div className="font-black text-sm text-[#08525a] flex items-center space-x-1.5">
+                        <td className="py-3 px-4">
+                          <div className="font-black text-sm text-[#08525a] flex items-center space-x-1.5 whitespace-nowrap">
                             <span>{fullName}</span>
                             <button
                               onClick={(e) => handleCopy(fullName, `name-${c.id}`, e)}
@@ -563,10 +563,8 @@ export default function AdminPage() {
                               {copiedField === `name-${c.id}` ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
                             </button>
                           </div>
-                          <div className="text-gray-400 text-[11px] flex items-center space-x-2 mt-0.5">
-                            <span>{prof.citizenship || "РФ"}</span>
-                            <span>•</span>
-                            <span>{prof.birth_date || "—"}</span>
+                          <div className="text-gray-400 text-[11px] flex items-center space-x-2 mt-0.5 whitespace-nowrap">
+                            <span>{prof.birth_date ? `ДР: ${prof.birth_date}` : "ДР: —"}</span>
                             {c.created_at && (
                               <>
                                 <span>•</span>
@@ -576,12 +574,12 @@ export default function AdminPage() {
                           </div>
                         </td>
 
-                        {/* Interactive Status Selector */}
-                        <td className="py-3.5 px-3">
+                        {/* Interactive Status Selector (width tailored to longest text 'Ждем документы') */}
+                        <td className="py-3 px-3 whitespace-nowrap">
                           <select
                             value={currentStatus}
                             onChange={(e) => handleUpdateStatus(c.id, e.target.value, e)}
-                            className={`px-2.5 py-1.5 rounded-xl font-bold text-[11px] border outline-none cursor-pointer ${statusInfo.color}`}
+                            className={`w-[145px] px-2.5 py-1.5 rounded-xl font-bold text-[11px] border outline-none cursor-pointer transition ${statusInfo.color}`}
                           >
                             <option value="new">🔵 Новая</option>
                             <option value="in_progress">🟠 В обработке</option>
@@ -593,7 +591,7 @@ export default function AdminPage() {
                         </td>
 
                         {/* INN & SNILS with fast copy */}
-                        <td className="py-3.5 px-3 font-mono text-[11px]">
+                        <td className="py-3 px-3 font-mono text-[11px] whitespace-nowrap">
                           <div className="flex items-center space-x-1.5">
                             <span className="text-gray-400 text-[10px]">ИНН:</span>
                             <span className="font-bold">{maskINN(tax.inn)}</span>
@@ -623,7 +621,7 @@ export default function AdminPage() {
                         </td>
 
                         {/* Passport with fast copy */}
-                        <td className="py-3.5 px-3 font-mono text-[11px]">
+                        <td className="py-3 px-3 font-mono text-[11px] whitespace-nowrap">
                           <div className="flex items-center space-x-1.5 font-bold">
                             <span>{maskPassport(pass.series, pass.number)}</span>
                             {pass.series && pass.number && (
@@ -641,10 +639,10 @@ export default function AdminPage() {
                           </div>
                         </td>
 
-                        {/* Phone & Direct WhatsApp */}
-                        <td className="py-3.5 px-3">
-                          <div className="flex items-center space-x-1.5">
-                            <span className="font-bold font-mono text-[11px]">{cont.phone || "—"}</span>
+                        {/* Phone & Direct WhatsApp (single line) */}
+                        <td className="py-3 px-3 whitespace-nowrap">
+                          <div className="flex items-center space-x-1.5 whitespace-nowrap">
+                            <span className="font-bold font-mono text-[11px] whitespace-nowrap">{cont.phone || "—"}</span>
                             {cont.phone && (
                               <button
                                 onClick={(e) => handleCopy(cont.phone, `phone-${c.id}`, e)}
@@ -660,7 +658,7 @@ export default function AdminPage() {
                               href={waLink}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center space-x-1 text-[10px] font-bold text-emerald-600 hover:text-emerald-700 mt-1 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 transition"
+                              className="inline-flex items-center space-x-1 text-[10px] font-bold text-emerald-600 hover:text-emerald-700 mt-0.5 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 transition whitespace-nowrap"
                               title="Написать клиенту в WhatsApp прямо сейчас"
                             >
                               <span>WhatsApp</span>
@@ -669,19 +667,19 @@ export default function AdminPage() {
                           )}
                         </td>
 
-                        {/* Direct Actions: PDF Print, CRM Modal, Delete */}
-                        <td className="py-3.5 px-4 text-right">
+                        {/* Direct Actions: Compact PDF button, CRM Modal, Delete */}
+                        <td className="py-3 px-4 text-right whitespace-nowrap">
                           <div className="flex items-center justify-end space-x-1.5">
-                            {/* Direct PDF Dossier Print */}
+                            {/* Direct PDF Dossier Print (compact icon + "PDF") */}
                             <a
                               href={`/api/client/${c.id}/pdf`}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="p-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold transition flex items-center space-x-1"
-                              title="Печать официального PDF-досье прямо из списка"
+                              className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold text-[11px] transition flex items-center space-x-1 border border-slate-200 shadow-sm whitespace-nowrap"
+                              title="Печать PDF-досье прямо из списка"
                             >
-                              <Printer className="w-4 h-4 text-[#0E7C86]" />
-                              <span className="hidden xl:inline text-[10px]">Печать PDF</span>
+                              <Printer className="w-3.5 h-3.5 text-[#0E7C86]" />
+                              <span>PDF</span>
                             </a>
 
                             {/* Open Full CRM Card */}
@@ -690,7 +688,7 @@ export default function AdminPage() {
                                 setSelectedClient(c);
                                 setClientModalTab("overview");
                               }}
-                              className="px-3 py-2 bg-[#0E7C86] hover:bg-[#08525a] text-white rounded-xl font-bold text-xs transition shadow-sm flex items-center space-x-1"
+                              className="px-2.5 py-1.5 bg-[#0E7C86] hover:bg-[#08525a] text-white rounded-xl font-bold text-[11px] transition shadow-sm flex items-center space-x-1 whitespace-nowrap"
                             >
                               <Eye className="w-3.5 h-3.5" />
                               <span>CRM</span>
@@ -699,10 +697,10 @@ export default function AdminPage() {
                             {/* Delete */}
                             <button
                               onClick={() => handleDeleteClient(c.id)}
-                              className="p-2 text-rose-500 hover:bg-rose-50 rounded-xl transition"
+                              className="p-1.5 text-rose-500 hover:bg-rose-50 rounded-xl transition"
                               title="Удалить клиента"
                             >
-                              <Trash2 className="w-4 h-4" />
+                              <Trash2 className="w-3.5 h-3.5" />
                             </button>
                           </div>
                         </td>
