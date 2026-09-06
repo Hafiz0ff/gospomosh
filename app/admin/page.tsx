@@ -20,6 +20,7 @@ import {
 } from "@/lib/dataService";
 import { uploadClientDocument, getDocumentSignedUrl } from "@/lib/storageService";
 import { exportClientsToExcel } from "@/lib/excelService";
+import { getMaritalStatusLabel } from "@/lib/questionnaireTranslations";
 import {
   Lead, ClientData, Service, ClientCommunication, ManagerTask,
   ClientDocument, FullClientQuestionnaire
@@ -1149,7 +1150,7 @@ export default function AdminPage() {
                     <span className="text-[11px] font-black text-[#0E7C86] uppercase">Основная информация</span>
                     <div><span className="text-gray-400 block">Дата рождения:</span><span className="font-bold">{selectedClient.questionnaire.profile.birth_date}</span></div>
                     <div><span className="text-gray-400 block">Гражданство:</span><span className="font-bold">{selectedClient.questionnaire.profile.citizenship}</span></div>
-                    <div><span className="text-gray-400 block">Семейное положение:</span><span className="font-bold">{selectedClient.questionnaire.marital_status === "married" ? "В браке" : "Холост / Не замужем"}</span></div>
+                    <div><span className="text-gray-400 block">Семейное положение:</span><span className="font-bold">{getMaritalStatusLabel(selectedClient.questionnaire.marital_status, selectedClient.questionnaire.profile?.gender, "ru")}</span></div>
                   </div>
 
                   <div className="p-4 bg-[#FDF2F0] rounded-2xl space-y-2.5">

@@ -8,7 +8,7 @@ import { FullClientQuestionnaire, Child, ClientDocument } from "@/lib/types";
 import { saveQuestionnaire, getClientQuestionnaire } from "@/lib/dataService";
 import { submitQuestionnaireAction } from "@/app/actions/submitQuestionnaire";
 import { useLanguage } from "@/lib/languageContext";
-import { QUESTIONNAIRE_TRANSLATIONS } from "@/lib/questionnaireTranslations";
+import { QUESTIONNAIRE_TRANSLATIONS, getMaritalStatusLabel } from "@/lib/questionnaireTranslations";
 import { AlertCircle } from "lucide-react";
 import {
   ArrowLeft, ChevronRight, CheckCircle2, ShieldAlert, User, Globe, FileText,
@@ -685,10 +685,10 @@ export default function ClientQuestionnairePage() {
 
             <div className="space-y-3">
               {[
-                { id: 'single', label: 'Не женат / Не замужем' },
-                { id: 'married', label: 'Женат / Замужем' },
-                { id: 'divorced', label: 'Разведен / Разведена' },
-                { id: 'widowed', label: 'Вдовец / Вдова' }
+                { id: 'single', label: getMaritalStatusLabel('single', q.profile.gender, language) },
+                { id: 'married', label: getMaritalStatusLabel('married', q.profile.gender, language) },
+                { id: 'divorced', label: getMaritalStatusLabel('divorced', q.profile.gender, language) },
+                { id: 'widowed', label: getMaritalStatusLabel('widowed', q.profile.gender, language) }
               ].map((item) => (
                 <button
                   key={item.id}
@@ -717,7 +717,7 @@ export default function ClientQuestionnairePage() {
 
             {q.marital_status !== 'married' ? (
               <div className="p-6 bg-[#FDF2F0] rounded-2xl text-center text-xs font-bold text-[#08525a]/70">
-                Шаг пропущен, так как семейное положение указано как «{q.marital_status === 'single' ? 'Не женат/не замужем' : q.marital_status === 'divorced' ? 'Разведен' : 'Вдовец/вдова'}».
+                Шаг пропущен, так как семейное положение указано как «{getMaritalStatusLabel(q.marital_status, q.profile.gender, language)}».
               </div>
             ) : (
               <div className="space-y-4">

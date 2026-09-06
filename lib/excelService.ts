@@ -1,5 +1,6 @@
 import ExcelJS from "exceljs";
 import { ClientData } from "./types";
+import { getMaritalStatusLabel } from "./questionnaireTranslations";
 
 const STATUS_LABELS: Record<string, { label: string; fg: string; bg: string }> = {
   new: { label: "Новая анкета", fg: "FF0369A1", bg: "FFE0F2FE" },
@@ -130,7 +131,7 @@ export async function exportClientsToExcel(clients: ClientData[]) {
 
     const fullName = [prof.last_name, prof.first_name, prof.middle_name].filter(Boolean).join(" ") || "Не указано";
     const regAddressStr = [addr.region, addr.city, addr.street ? "ул. " + addr.street : "", addr.house ? "д. " + addr.house : "", addr.apartment ? "кв. " + addr.apartment : ""].filter(Boolean).join(", ");
-    const maritalStr = q?.marital_status === "married" ? "В браке" : q?.marital_status === "divorced" ? "В разводе" : q?.marital_status === "widowed" ? "Вдовец / Вдова" : "Холост / Не замужем";
+    const maritalStr = getMaritalStatusLabel(q?.marital_status, prof?.gender, "ru");
     const statusMeta = STATUS_LABELS[c.status] || { label: c.status || "В базе CRM", fg: "FF0F766E", bg: "FFCCFBF1" };
 
     const isEven = index % 2 === 1;

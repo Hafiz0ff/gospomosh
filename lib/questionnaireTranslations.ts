@@ -267,3 +267,44 @@ export const QUESTIONNAIRE_TRANSLATIONS: Record<"ru" | "tg", QuestionnaireLocale
     }
   }
 };
+
+/**
+ * Returns gender-aware marital status string (e.g. Холост / Не замужем, Разведен / Разведена)
+ */
+export function getMaritalStatusLabel(
+  status?: "single" | "married" | "divorced" | "widowed" | string | null,
+  gender?: "male" | "female" | string | null,
+  locale: "ru" | "tg" = "ru"
+): string {
+  const isFemale = gender === "female";
+
+  if (locale === "tg") {
+    switch (status) {
+      case "single":
+        return "Муҷаррад";
+      case "married":
+        return "Оиладор";
+      case "divorced":
+        return "Ҷудошуда";
+      case "widowed":
+        return isFemale ? "Бевазан" : "Бевамард";
+      default:
+        return "Муҷаррад";
+    }
+  }
+
+  // Russian
+  switch (status) {
+    case "single":
+      return isFemale ? "Не замужем" : "Холост";
+    case "married":
+      return isFemale ? "Замужем" : "Женат";
+    case "divorced":
+      return isFemale ? "Разведена" : "Разведен";
+    case "widowed":
+      return isFemale ? "Вдова" : "Вдовец";
+    default:
+      return isFemale ? "Не замужем" : "Холост";
+  }
+}
+

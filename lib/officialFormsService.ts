@@ -291,7 +291,7 @@ export function generatePassport1PFormHtml(client: ClientData): string {
       <div class="f1p-row">
         <span class="f1p-label">4. Семейное положение:</span>
         <div style="flex: 1; font-weight: bold;">
-          ${q.marital_status === "married" ? "СОСТОИТ В БРАКЕ" : q.marital_status === "divorced" ? "РАЗВЕДЕН(А)" : q.marital_status === "widowed" ? "ВДОВЕЦ / ВДОВА" : "В БРАКЕ НЕ СОСТОИТ"}
+          ${q.marital_status === "married" ? (p.gender === "female" ? "ЗАМУЖЕМ" : "ЖЕНАТ") : q.marital_status === "divorced" ? (p.gender === "female" ? "РАЗВЕДЕНА" : "РАЗВЕДЕН") : q.marital_status === "widowed" ? (p.gender === "female" ? "ВДОВА" : "ВДОВЕЦ") : (p.gender === "female" ? "НЕ ЗАМУЖЕМ" : "ХОЛОСТ")}
           ${sp ? `(Супруг(а): ${sp.last_name} ${sp.first_name} ${sp.middle_name || ""}, дата брака: ${sp.marriage_date || "—"})` : ""}
         </div>
       </div>
@@ -794,7 +794,7 @@ export function generateRvpVnzhFormHtml(client: ClientData): string {
         <span class="vnzh-num">6.</span> ИНН (при наличии): <strong>${q.tax.inn || "Не присвоен"}</strong> • СНИЛС: <strong>${q.tax.snils || "Не оформлен"}</strong>
       </div>
       <div class="vnzh-row">
-        <span class="vnzh-num">7.</span> Семейное положение: <strong>${q.marital_status === "married" ? "ЖЕНАТ / ЗАМУЖЕМ" : "ХОЛОСТ / НЕ ЗАМУЖЕМ"}</strong>
+        <span class="vnzh-num">7.</span> Семейное положение: <strong>${q.marital_status === "married" ? (p.gender === "female" ? "ЗАМУЖЕМ" : "ЖЕНАТ") : q.marital_status === "divorced" ? (p.gender === "female" ? "РАЗВЕДЕНА" : "РАЗВЕДЕН") : q.marital_status === "widowed" ? (p.gender === "female" ? "ВДОВА" : "ВДОВЕЦ") : (p.gender === "female" ? "НЕ ЗАМУЖЕМ" : "ХОЛОСТ")}</strong>
       </div>
     </div>
 

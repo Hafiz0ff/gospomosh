@@ -12,7 +12,7 @@ import { saveQuestionnaire } from "@/lib/dataService";
 import { submitQuestionnaireAction } from "@/app/actions/submitQuestionnaire";
 import { uploadClientDocument, getDocumentSignedUrl } from "@/lib/storageService";
 import { useLanguage } from "@/lib/languageContext";
-import { QUESTIONNAIRE_TRANSLATIONS } from "@/lib/questionnaireTranslations";
+import { QUESTIONNAIRE_TRANSLATIONS, getMaritalStatusLabel } from "@/lib/questionnaireTranslations";
 import {
   ChevronRight, CheckCircle2, ShieldAlert, User, Globe, FileText,
   CreditCard, PhoneCall, MapPin, Heart, Users, Baby, FolderPlus, CheckSquare,
@@ -975,10 +975,10 @@ export default function ClientQuestionnaireHomePage() {
 
             <div className="space-y-3">
               {[
-                { id: 'single', label: tq.fields.single },
-                { id: 'married', label: tq.fields.married },
-                { id: 'divorced', label: tq.fields.divorced },
-                { id: 'widowed', label: tq.fields.widowed }
+                { id: 'single', label: getMaritalStatusLabel('single', q.profile.gender, language) },
+                { id: 'married', label: getMaritalStatusLabel('married', q.profile.gender, language) },
+                { id: 'divorced', label: getMaritalStatusLabel('divorced', q.profile.gender, language) },
+                { id: 'widowed', label: getMaritalStatusLabel('widowed', q.profile.gender, language) }
               ].map((item) => (
                 <button
                   key={item.id}
@@ -1008,8 +1008,8 @@ export default function ClientQuestionnaireHomePage() {
             {q.marital_status !== 'married' ? (
               <div className="p-6 bg-[#FDF2F0] rounded-2xl text-center text-xs font-bold text-[#08525a]/70">
                 {language === "tg"
-                  ? "Қадам гузаронида шуд, зеро вазъи оилавӣ «Оиладор» интихоб нашудааст."
-                  : "Шаг пропущен, так как семейное положение указано как «Не женат/не замужем»."}
+                  ? `Қадам гузаронида шуд, зеро вазъи оилавӣ «${getMaritalStatusLabel(q.marital_status, q.profile.gender, 'tg')}» интихоб шудааст.`
+                  : `Шаг пропущен, так как семейное положение указано как «${getMaritalStatusLabel(q.marital_status, q.profile.gender, 'ru')}».`}
               </div>
             ) : (
               <div className="space-y-4">

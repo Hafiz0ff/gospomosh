@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getClientById } from "@/lib/dataService";
+import { getMaritalStatusLabel } from "@/lib/questionnaireTranslations";
 
 export async function GET(
   request: NextRequest,
@@ -84,7 +85,7 @@ export async function GET(
       <div class="field"><span class="label">Основной телефон:</span><span class="value">${q.contacts.phone}</span></div>
       <div class="field"><span class="label">WhatsApp:</span><span class="value">${q.contacts.whatsapp || q.contacts.phone}</span></div>
       <div class="field"><span class="label">Email:</span><span class="value">${q.contacts.email || "—"}</span></div>
-      <div class="field"><span class="label">Семейное положение:</span><span class="value">${q.marital_status === "married" ? "Женат / Замужем" : q.marital_status === "divorced" ? "Разведен(а)" : q.marital_status === "widowed" ? "Вдовец/вдова" : "Холост / Не замужем"}</span></div>
+      <div class="field"><span class="label">Семейное положение:</span><span class="value">${getMaritalStatusLabel(q.marital_status, q.profile?.gender, "ru")}</span></div>
       <div class="field" style="grid-column: span 2;"><span class="label">Адрес постоянной регистрации:</span><span class="value">${q.registration_address.country}, ${q.registration_address.region ? q.registration_address.region + ", " : ""}г. ${q.registration_address.city}, ул. ${q.registration_address.street}, д. ${q.registration_address.house}${q.registration_address.apartment ? ", кв. " + q.registration_address.apartment : ""}</span></div>
     </div>
   </div>
