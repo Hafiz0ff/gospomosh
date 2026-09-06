@@ -364,28 +364,23 @@ export default function AdminPage() {
   if (!isAuthenticated) return null;
 
   return (
-    <div className="max-w-7xl mx-auto py-4 sm:py-6 px-3 sm:px-6 space-y-6 text-[#08525a]">
+    <div className="max-w-7xl mx-auto pt-0 pb-4 px-3 sm:px-6 space-y-3 text-[#08525a]">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 sm:p-5 rounded-3xl border border-[#0E7C86]/10 shadow-sm">
-        <div className="flex items-center space-x-3.5">
-          <div className="w-11 h-11 rounded-2xl bg-[#0E7C86] text-white flex items-center justify-center shadow-md">
-            <Shield className="w-6 h-6" />
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-white py-2.5 px-4 sm:px-5 rounded-2xl border border-[#0E7C86]/10 shadow-sm">
+        <div className="flex items-center space-x-3">
+          <div className="w-9 h-9 rounded-xl bg-[#0E7C86] text-white flex items-center justify-center shadow-sm">
+            <Shield className="w-5 h-5" />
           </div>
           <div>
-            <div className="flex items-center space-x-2.5">
-              <h1 className="text-xl sm:text-2xl font-black text-[#08525a]">Панель управления</h1>
-              <span className="px-2.5 py-0.5 bg-slate-100 text-slate-700 text-[11px] font-bold rounded-lg border border-slate-200">
-                ГосПомощь
-              </span>
-            </div>
-            <p className="text-[#08525a]/60 text-xs">Реестр клиентов, обработка анкет и документооборот</p>
+            <h1 className="text-lg sm:text-xl font-black text-[#08525a] leading-tight">Панель управления</h1>
+            <p className="text-[#08525a]/60 text-xs mt-0.5">Реестр клиентов, обработка анкет и документооборот</p>
           </div>
         </div>
 
-        <div className="flex items-center space-x-2.5 w-full sm:w-auto justify-between sm:justify-end">
+        <div className="flex items-center space-x-2 w-full sm:w-auto justify-between sm:justify-end">
           <button
             onClick={() => setShowMasked(!showMasked)}
-            className="text-xs font-bold px-3.5 py-2 bg-[#FDF2F0] border border-[#0E7C86]/20 text-[#08525a] rounded-xl transition flex items-center space-x-1.5 hover:bg-[#FDF2F0]/80"
+            className="text-xs font-bold px-3 py-1.5 bg-[#FDF2F0] border border-[#0E7C86]/20 text-[#08525a] rounded-xl transition flex items-center space-x-1.5 hover:bg-[#FDF2F0]/80"
             title="Переключить маскирование персональных данных"
           >
             {showMasked ? <Lock className="w-3.5 h-3.5 text-[#2AA9A9]" /> : <Unlock className="w-3.5 h-3.5 text-[#FF8C42]" />}
@@ -393,7 +388,7 @@ export default function AdminPage() {
           </button>
           <button
             onClick={handleLogout}
-            className="text-xs font-bold px-4 py-2 bg-white border border-rose-200 text-rose-600 hover:bg-rose-50 rounded-xl transition"
+            className="text-xs font-bold px-3.5 py-1.5 bg-white border border-rose-200 text-rose-600 hover:bg-rose-50 rounded-xl transition"
           >
             Выйти
           </button>
@@ -401,7 +396,7 @@ export default function AdminPage() {
       </div>
 
       {/* Main Tabs */}
-      <div className="flex space-x-2 border-b border-[#0E7C86]/10 pb-2 overflow-x-auto">
+      <div className="flex space-x-1.5 overflow-x-auto pb-0.5">
         {[
           { id: "clients", label: "Клиенты & Реестр", icon: Users, count: clients.length },
           { id: "dashboard", label: "Аналитика", icon: Briefcase },
@@ -414,8 +409,8 @@ export default function AdminPage() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition flex items-center space-x-2 whitespace-nowrap ${
-                isActive ? "bg-[#0E7C86] text-white shadow-md" : "bg-white border border-[#0E7C86]/15 text-[#08525a] hover:bg-[#FDF2F0]"
+              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center space-x-2 whitespace-nowrap ${
+                isActive ? "bg-[#0E7C86] text-white shadow-sm" : "bg-white border border-[#0E7C86]/15 text-[#08525a] hover:bg-[#FDF2F0]"
               }`}
             >
               <Icon className="w-4 h-4" />
@@ -434,7 +429,7 @@ export default function AdminPage() {
       {/* 1. CLIENTS & REGISTRY TAB */}
       {/* ======================================================== */}
       {activeTab === "clients" && (
-        <div className="bg-white rounded-3xl border border-[#0E7C86]/10 p-4 sm:p-6 shadow-sm space-y-5">
+        <div className="bg-white rounded-2xl border border-[#0E7C86]/10 p-3.5 sm:p-5 shadow-sm space-y-3.5">
           {/* Controls Bar */}
           <div className="flex flex-col lg:flex-row justify-between items-stretch lg:items-center gap-3.5">
             {/* Search */}
